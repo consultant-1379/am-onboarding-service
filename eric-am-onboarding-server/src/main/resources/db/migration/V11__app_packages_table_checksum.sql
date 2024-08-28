@@ -1,0 +1,1 @@
+ALTER TABLE app_packages ADD checksum VARCHAR DEFAULT NULL;

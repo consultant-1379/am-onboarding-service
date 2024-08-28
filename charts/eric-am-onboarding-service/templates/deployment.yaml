@@ -1,0 +1,482 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+{{/*
+Values for probes
+*/}}
+{{- $probesValue := fromJson (include "eric-am-onboarding-service.probes" .) -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "eric-am-onboarding-service.name" . }}
+  labels: {{- include "eric-am-onboarding-service.labels.extended-defaults" . | nindent 4 }}
+  annotations: {{- include "eric-am-onboarding-service.annotations" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.updateStrategy.type | quote }}
+  {{- if and (eq .Values.updateStrategy.type "RollingUpdate") .Values.updateStrategy.rollingUpdate }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "eric-am-onboarding-service.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- $commonLabels := include "eric-am-onboarding-service.labels.extended-defaults" . | fromYaml }}
+        {{- include "eric-eo-evnfm-library-chart.mergeLabels" (dict "location" .Template.Name "sources" (list
+            $commonLabels)) | trim | nindent 8 }}
+      annotations:
+        {{- $commonAnnotations := include "eric-am-onboarding-service.annotations" . | fromYaml }}
+        {{- $serviceMesh := include "eric-am-onboarding-service.service-mesh-inject" . | fromYaml }}
+        {{- $serviceMeshVersion := include "eric-am-onboarding-service.service-mesh-version" . | fromYaml }}
+        {{- $serviceMeshLogs := include "eric-am-onboarding-service.service-mesh-logs" . | fromYaml }}
+        {{- $serviceMeshExcludeOutboundPort := include "eric-am-onboarding-service.excludeOutboundPorts" . | fromYaml }}
+        {{- include "eric-eo-evnfm-library-chart.mergeAnnotations" (dict "location" .Template.Name "sources" (list $commonAnnotations
+            $serviceMesh $serviceMeshVersion $serviceMeshLogs $serviceMeshExcludeOutboundPort)) | trim | nindent 8 }}
+    spec:
+      securityContext:
+        fsGroup: {{ include "eric-am-onboarding-service.fsGroup" . }}
+      affinity:
+        podAntiAffinity:
+      {{- if eq .Values.affinity.podAntiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+      {{- else if eq .Values.affinity.podAntiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+      {{- end }}
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ template "eric-am-onboarding-service.name" . }}
+              topologyKey: {{ .Values.affinity.topologyKey }}
+      {{- if include "eric-am-onboarding-service.pullSecrets" . }}
+      imagePullSecrets:
+        - name: {{ template "eric-am-onboarding-service.pullSecrets" . }}
+      {{- end }}
+      serviceAccountName: {{ template "eric-am-onboarding-service.serviceAccount.name" . }}
+      {{- if include "eric-am-onboarding-service.podPriority" . }}
+      priorityClassName: {{- include "eric-am-onboarding-service.podPriority" . | indent 2 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ template "eric-am-onboarding-service.mainImagePath" . }}
+          imagePullPolicy: {{ template "eric-am-onboarding-service.imagePullPolicy" . }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.container.ports.http }}
+              protocol: TCP
+          env:
+            - name: "license.host"
+              value: "http://eric-eo-lm-consumer.{{ .Release.Namespace }}"
+            - name: "keystore.location"
+              value: {{ .Values.keystore.location }}
+            - name: "spring.profiles.active"
+              value: "prod"
+            - name: "SKOPEO_ENABLED"
+              value: "false"
+            - name: "spring.config.import"
+              value: "kubernetes:"
+            - name: "helm.registry.repo"
+              value: {{ .Values.helm.registry.repo }}
+            - name: "SPRING_DATASOURCE_URL"
+              value: "jdbc:postgresql://{{ .Values.database.service }}.{{ .Release.Namespace }}:{{ index .Values "database" "port" }}/{{ index .Values "database" "schema" }}"
+            - name: "SPRING_DATASOURCE_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgresCredentials.secret }}
+                  key: {{ .Values.database.keyForUserId }}
+            - name: "SPRING_DATASOURCE_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgresCredentials.secret }}
+                  key: {{ .Values.database.keyForUserPw }}
+            - name: HELM_CHART_REGISTRY_SECRET_NAME
+              value: {{ .Values.helm.registry.secretName }}
+            - name: "container.registry.enabled"
+              value: {{ .Values.container.registry.enabled | quote }}
+      {{- if .Values.container.registry.enabled }}
+            - name: "DOCKER_REGISTRY_ADDRESS"
+              valueFrom:
+                secretKeyRef:
+                  name: eric-lcm-container-registry-registry
+                  key: url
+            - name: "docker.registry.user.name"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.userSecret }}
+                  key: userid
+            - name: "docker.registry.user.password"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.userSecret }}
+                  key: userpasswd
+      {{- end }}
+            - name: TZ
+              value: {{ .Values.global.timezone }}
+            - name: SERVICE_ID
+              value: "eric-eo-evnfm-onboarding"
+{{ include "eric-am-onboarding-service.db.connection.pool.max.lifetime" . | indent 12 }}
+            - name: SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE
+              value: "{{ .Values.onboarding.request.max.size }}"
+            - name: SPRING_SERVLET_MULTIPART_MAX-FILE-SIZE
+              value: "{{ .Values.onboarding.request.max.size }}"
+            - name: onboarding.pagination.disabledByDefault
+              value: "{{ .Values.onboarding.pagination.disabledByDefault }}"
+            - name: "onboarding.restrictedMode"
+              value: {{ .Values.onboarding.restrictedMode | quote }}
+            - name: onboarding.skipToscaoValidation
+              value: "{{ .Values.onboarding.skipToscaoValidation }}"
+            - name: onboarding.ignoreCrlInfo
+              value: "{{ .Values.onboarding.ignoreCrlInfo }}"
+            - name: onboarding.skipCertificateKeyUsageValidation
+              value: "{{ .Values.onboarding.skipCertificateKeyUsageValidation }}"
+            - name: onboarding.allowUnsignedVNFPackageOnboarding
+              value: "{{ .Values.onboarding.allowUnsignedVNFPackageOnboarding }}"
+            - name: onboarding.skipCertificateValidation
+              value: "{{ .Values.onboarding.skipCertificateValidation }}"
+            - name: onboarding.upload.concurrency
+              value: "{{ .Values.onboarding.upload.concurrency }}"
+            - name: onboarding.logConcurrentRequests
+              value: "{{ .Values.onboarding.logConcurrentRequests }}"
+            - name: "DB_POOL_LEAK_DETECTION_THRESHOLD"
+              value: "{{ .Values.onboarding.hikari.leakDetectionThreshold }}"
+            - name: TOSCAO_HOST
+              value: "{{ .Values.toscao.host }}.{{ .Release.Namespace }}"
+            - name: TOSCAO_PORT
+              value: "{{ .Values.toscao.port }}"
+            - name: TOSCAO_API_VERSION
+              value: "{{ .Values.toscao.api.version }}"
+            - name: OBJECT_STORAGE_ENABLED
+              value: "{{ .Values.objectStorage.enabled }}"
+            - name: OBJECT_STORAGE_PORT
+              value: "{{ .Values.objectStorage.port }}"
+            - name: OBJECT_STORAGE_HOST
+              value: "{{ .Values.objectStorage.host }}"
+            - name: OBJECT_STORAGE_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.objectStorage.kubernetesSecretName }}
+                  key: accesskey
+                  optional: true
+            - name: OBJECT_STORAGE_SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.objectStorage.kubernetesSecretName }}
+                  key: secretkey
+                  optional: true
+            {{- if (eq (include "eric-am-onboarding-service.global-security-tls-enabled" . ) "true") }}
+            - name: OBJECT_STORAGE_SECURE
+              value: "{{ .Values.global.security.tls.enabled }}"
+            - name: OBJECT_STORAGE_TLS_CA_CERT
+              value: {{ template "eric-am-onboarding-service.rootCACertPath" . }}
+            {{ end }}
+            {{- if .Values.global.logging }}
+            {{- if .Values.global.logging.enabled }}
+            - name: heartbeat.podName
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: LOG_STREAMINGMETHOD
+              value: {{ include "eric-am-onboarding-service.log.streamingMethod" . }}
+            {{- if or (eq (include "eric-am-onboarding-service.log.streamingMethod" . ) "dual") (eq (include "eric-am-onboarding-service.log.streamingMethod" . ) "direct") }}
+            - name: LOGSTASH_HOST
+              value: "{{ .Values.logging.logstash.host }}"
+            - name: LOGSTASH_PORT
+              value: "{{ .Values.logging.logstash.port }}"
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            - name: JAVA_OPTS
+              value: {{ include "eric-am-onboarding-service.javaToolOptions" . | quote }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            privileged: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+          resources:
+            requests:
+            {{- if .Values.resources.onboarding.requests.cpu }}
+              cpu: {{ .Values.resources.onboarding.requests.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboarding.requests.memory }}
+              memory: {{ .Values.resources.onboarding.requests.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboarding.requests "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboarding.requests "ephemeral-storage" | quote }}
+            {{- end }}
+            limits:
+            {{- if .Values.resources.onboarding.limits.cpu }}
+              cpu: {{ .Values.resources.onboarding.limits.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboarding.limits.memory }}
+              memory: {{ .Values.resources.onboarding.limits.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboarding.limits "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboarding.limits "ephemeral-storage" | quote }}
+            {{- end }}
+          livenessProbe:
+            initialDelaySeconds: {{ $probesValue.onboarding.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ $probesValue.onboarding.livenessProbe.timeoutSeconds }}
+            periodSeconds: {{ $probesValue.onboarding.livenessProbe.periodSeconds }}
+            failureThreshold: {{ $probesValue.onboarding.livenessProbe.failureThreshold }}
+            httpGet:
+              path: /actuator/health/liveness
+              port: {{ .Values.container.ports.http }}
+          readinessProbe:
+            initialDelaySeconds: {{ $probesValue.onboarding.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ $probesValue.onboarding.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ $probesValue.onboarding.readinessProbe.periodSeconds }}
+            failureThreshold: {{ $probesValue.onboarding.readinessProbe.failureThreshold }}
+            httpGet:
+              path: /actuator/health/readiness
+              port: {{ .Values.container.ports.http }}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/waitAndShutdown.sh", "30" ]
+          volumeMounts:
+            - mountPath: /run/secrets/cacerts
+              name: cacert
+              readOnly: true
+            - mountPath: /obs
+              name: obs-data
+              readOnly: false
+            - mountPath: /tmp
+              name: tmp-data
+              readOnly: false
+            - mountPath: /var/lib/ca-certificates
+              name: ca-data
+              readOnly: false
+          {{- if not .Values.onboarding.skipCertificateValidation }}
+            - mountPath: /run/secrets/ca/root
+              name: root-ca-cert
+              readOnly: true
+          {{- end }}
+          {{- if (eq (include "eric-am-onboarding-service.global-security-tls-enabled" . ) "true") }}
+            - name: {{ template "eric-am-onboarding-service.rootCAVolumeName" . }}
+              mountPath: {{ template "eric-am-onboarding-service.rootCAMountPath" . }}
+          {{- end }}
+      volumes:
+        - name: cacert
+          secret:
+            secretName: {{ .Values.caSecret.name }}
+            items:
+            - key: tls.crt
+              path: ca/tls
+        - name: obs-data
+          emptyDir: {}
+        - name: tmp-data
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: [ "ReadWriteOnce" ]
+                resources:
+                  requests:
+                    storage: {{ .Values.ephemeral.volume.size }}
+                {{- if include "eric-am-onboarding-service.storageClassName" . }}
+                storageClassName: {{ template "eric-am-onboarding-service.storageClassName" . }}
+                {{- end }}
+        - name: ca-data
+          emptyDir: {}
+      {{- if not .Values.onboarding.skipCertificateValidation }}
+        - name: root-ca-cert
+          secret:
+            secretName: {{ template "eric-am-onboarding-service.name" . }}-certm-ca-certs
+      {{- end }}
+      {{- if eq (include "eric-am-onboarding-service.global-security-tls-enabled" . ) "true" }}
+        - name: {{ template "eric-am-onboarding-service.rootCAVolumeName" . }}
+          secret:
+            secretName: {{ template "eric-am-onboarding-service.rootCASecretName" . }}
+            optional: true
+      {{- end }}
+      initContainers:
+        - name: copy-ca
+          image: {{ template "eric-am-onboarding-service.mainImagePath" . }}
+          imagePullPolicy: {{ template "eric-am-onboarding-service.imagePullPolicy" . }}
+          env:
+            - name: "SOURCE"
+              value: "/var/lib/ca-certificates"
+            - name: "TARGET"
+              value: "/ca"
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "cp -R $SOURCE/* $TARGET/ && chmod 0755 -R $TARGET/*"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+          resources:
+            requests:
+            {{- if .Values.resources.onboardingCopyCA.requests.cpu }}
+              cpu: {{ .Values.resources.onboardingCopyCA.requests.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboardingCopyCA.requests.memory }}
+              memory: {{ .Values.resources.onboardingCopyCA.requests.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboardingCopyCA.requests "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboardingCopyCA.requests "ephemeral-storage" | quote }}
+            {{- end }}
+            limits:
+            {{- if .Values.resources.onboardingCopyCA.limits.cpu }}
+              cpu: {{ .Values.resources.onboardingCopyCA.limits.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboardingCopyCA.limits.memory }}
+              memory: {{ .Values.resources.onboardingCopyCA.limits.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboardingCopyCA.limits "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboardingCopyCA.limits "ephemeral-storage" | quote }}
+            {{- end }}
+          volumeMounts:
+            - mountPath: /ca
+              name: ca-data
+              readOnly: false
+        {{- if .Values.database.createDatabases }}
+        - name: create-db-schema
+          image: {{ template "eric-am-onboarding-service.pgInitContainerPath" . }}
+          imagePullPolicy: {{ template "eric-am-onboarding-service.pgInitContainer.imagePullPolicy" . }}
+          env:
+            - name: "POSTGRES_HOST"
+              value: "{{ .Values.database.service }}.{{ .Release.Namespace }}"
+            - name: "POSTGRES_USER"
+              value: "postgres"
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgresCredentials.secret }}
+                  key: {{ .Values.database.keyForSuperPw }}
+            - name: "POSTGRES_DB"
+              value: {{ .Values.database.schema | quote }}
+            - name: "POSTGRES_PORT"
+              value: {{ .Values.database.port | quote }}
+            - name: "STARTUP_WAIT"
+              value: {{ .Values.database.creationTime | quote }}
+            - name: TZ
+              value: {{ .Values.global.timezone }}
+          resources:
+            requests:
+            {{- if .Values.resources.onboardingDBschema.requests.cpu }}
+              cpu: {{ .Values.resources.onboardingDBschema.requests.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboardingDBschema.requests.memory }}
+              memory: {{ .Values.resources.onboardingDBschema.requests.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboardingDBschema.requests "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboardingDBschema.requests "ephemeral-storage" | quote }}
+            {{- end }}
+            limits:
+            {{- if .Values.resources.onboardingDBschema.limits.cpu }}
+              cpu: {{ .Values.resources.onboardingDBschema.limits.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboardingDBschema.limits.memory }}
+              memory: {{ .Values.resources.onboardingDBschema.limits.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboardingDBschema.limits "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboardingDBschema.limits "ephemeral-storage" | quote }}
+            {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsGroup: 113992
+            capabilities:
+              drop:
+                - all
+        - name: create-toscao-db-schema
+          image: {{ template "eric-am-onboarding-service.pgInitContainerPath" . }}
+          imagePullPolicy: {{ template "eric-am-onboarding-service.pgInitContainer.imagePullPolicy" . }}
+          env:
+            - name: "POSTGRES_HOST"
+              value: "{{ .Values.database.service }}.{{ .Release.Namespace }}"
+            - name: "POSTGRES_USER"
+              value: "postgres"
+            - name: "PGPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgresCredentials.secret }}
+                  key: {{ .Values.database.keyForSuperPw }}
+            - name: "POSTGRES_DB"
+              value: {{ .Values.database.toscao.schema | quote }}
+            - name: "POSTGRES_PORT"
+              value: {{ .Values.database.port | quote }}
+            - name: "STARTUP_WAIT"
+              value: {{ .Values.database.creationTime | quote }}
+            - name: TZ
+              value: {{ .Values.global.timezone }}
+          resources:
+            requests:
+            {{- if .Values.resources.onboardingDBtoscao.requests.cpu }}
+              cpu: {{ .Values.resources.onboardingDBtoscao.requests.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboardingDBtoscao.requests.memory }}
+              memory: {{ .Values.resources.onboardingDBtoscao.requests.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboardingDBtoscao.requests "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboardingDBtoscao.requests "ephemeral-storage" | quote }}
+            {{- end }}
+            limits:
+            {{- if .Values.resources.onboardingDBtoscao.limits.cpu }}
+              cpu: {{ .Values.resources.onboardingDBtoscao.limits.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.onboardingDBtoscao.limits.memory }}
+              memory: {{ .Values.resources.onboardingDBtoscao.limits.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.onboardingDBtoscao.limits "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.onboardingDBtoscao.limits "ephemeral-storage" | quote }}
+            {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsGroup: 113992
+            capabilities:
+              drop:
+                - all
+        {{- end }}
+      {{- if or .Values.nodeSelector (and .Values.global .Values.global.nodeSelector) }}
+      nodeSelector: {{- include "eric-am-onboarding-service.nodeSelector" . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.tolerations (and .Values.global .Values.global.tolerations) }}
+      tolerations: {{- include "eric-am-onboarding-service.tolerations.onboarding" . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds.onboarding | int }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- range $constraints := .Values.topologySpreadConstraints }}
+        - maxSkew: {{ $constraints.maxSkew }}
+          topologyKey: {{ $constraints.topologyKey }}
+          whenUnsatisfiable: {{ $constraints.whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ template "eric-am-onboarding-service.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      {{- end }}
+      {{- end }}

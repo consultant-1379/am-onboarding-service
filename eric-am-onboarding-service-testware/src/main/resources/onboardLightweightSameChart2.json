@@ -1,0 +1,670 @@
+{
+  "onboardApp": {
+    "appName": "sampledescriptor",
+    "csarDownloadUrl": "/tmp/spider-app-lightweight-same-chart-2.1.12-imageless.csar",
+    "appImagesCount": 1,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  },
+  "operations": [
+    {
+      "operationName": "instantiate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "default": "AES128",
+          "name": "ossTopology.snmpPrivProtocol",
+          "required": false,
+          "type": "string",
+          "description": "Authentication protocol used to authorize the identity of user. Not applicable for AXE based nodes.Applicable if SNMP V3 is used and the security level is either AUTH_NO_PRIV or AUTH_PRIV",
+          "entry_schema": null,
+          "constraints": [
+            {
+              "valid_values": [
+                "AES128",
+                "DES"
+              ]
+            }
+          ],
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "ossTopology.fmAlarmSupervision",
+          "required": false,
+          "type": "boolean",
+          "description": "FmAlarmSupervision is used to enable or disable alarms in case of any failures. Default value is true.",
+          "entry_schema": null,
+          "constraints": [
+            {
+              "valid_values": [
+                true,
+                false
+              ]
+            }
+          ],
+          "metadata": null
+        },
+        {
+          "default": "MD5",
+          "name": "ossTopology.snmpAuthProtocol",
+          "required": false,
+          "type": "string",
+          "description": "Authentication protocol used to authorize the identity of user. Not applicable for AXE based nodes.Applicable if SNMP V3 is used and the security level is either AUTH_NO_PRIV or AUTH_PRIV",
+          "entry_schema": null,
+          "constraints": [
+            {
+              "valid_values": [
+                "SHA1",
+                "MD5"
+              ]
+            }
+          ],
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "ossTopology.pmFunction",
+          "required": false,
+          "type": "boolean",
+          "description": "PmFunction is used to switch on and off PMIC Mediation flows for each Network Element. If PmFunction is on, all file collection, subscription activation, subscription deactivation, scanner polling and scanner master functionality is available for the Network Element. Default value is false.",
+          "entry_schema": null,
+          "constraints": [
+            {
+              "valid_values": [
+                true,
+                false
+              ]
+            }
+          ],
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.axeNodeInterfaceBIp",
+          "required": false,
+          "type": "string",
+          "description": "Mandatory for AXE-based nodes. IP address for the active side B of the Network Element.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "pm tag",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.snmpVersion",
+          "required": false,
+          "type": "string",
+          "description": "SNMP Version. Not applicable for AXE based nodes. In ENM for SNMP V3, it is mandatory to provide as \"SNMP_V3\".",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.sshPortNo",
+          "required": false,
+          "type": "string",
+          "description": "SSH Port Number. If not provided, default should be used.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.json.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for json to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.json.configMap"
+          }
+        },
+        {
+          "default": null,
+          "name": "ossTopology.snmpPrivacyPassword",
+          "required": true,
+          "type": "string",
+          "description": "Applicable only for ENM when SNMP V3 is used and the security level is AUTH_NO_PRIV or AUTH_PRIV. Password set for authentication with the provided Authentication Protocol for secure authorization.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.axeNodeClusterIP",
+          "required": false,
+          "type": "string",
+          "description": "Mandatory for AXE-based nodes. The Cluster IP Address of the Network Element.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.isManagerIpAddress",
+          "required": false,
+          "type": "string",
+          "description": "Mandatory for IS-based AXE nodes. IP address for the SIS interface manager.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.timeZone",
+          "required": false,
+          "type": "string",
+          "description": "Applicable only for AXE based nodes in ENM. If timeZone is not provided, then the timeZone of the system will be set.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.netConfPort",
+          "required": true,
+          "type": "string",
+          "description": "NetConf port number.Not applicable for AXE based nodes.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "ossTopology.cmNodeHeartbeatSupervision",
+          "required": false,
+          "type": "boolean",
+          "description": "Used only in case of ENM. Enabling CM Supervision will copy the current status of the configuration data of the node into ENM and enable CM Notifications. Enabling CM Notifications ensures that the node will notify ENM of any configuration data changes. Default value is true.",
+          "entry_schema": null,
+          "constraints": [
+            {
+              "valid_values": [
+                true,
+                false
+              ]
+            }
+          ],
+          "metadata": null
+        },
+        {
+          "default": "my-node",
+          "name": "ossTopology.managedElementId",
+          "required": true,
+          "type": "string",
+          "description": "The name the VNF will have in ENM",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "rontgen010.seli.gic.ericsson.se",
+          "name": "pm-testapp.ingress.domain",
+          "required": true,
+          "type": "string",
+          "description": "pm ingress",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.axeNodeInterfaceAIp",
+          "required": false,
+          "type": "string",
+          "description": "Mandatory for AXE-based nodes. IP address for the active side A of the Network Element.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.networkElementVersion",
+          "required": false,
+          "type": "string",
+          "description": "The Version of the Network Element. Becomes mandatory depending on the \"networkElementType\".",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.snmpAuthPassword",
+          "required": true,
+          "type": "string",
+          "description": "Applicable only for ENM when SNMP V3 is used and the security level is AUTH_NO_PRIV or AUTH_PRIV. Password set for authentication with the provided Authentication Protocol for secure authorization.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.communityString",
+          "required": true,
+          "type": "string",
+          "description": "Community string for SNMP. If not provided,default string \"enm-public\" would be taken. Not applicable for AXE based nodes.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.sftpPort",
+          "required": false,
+          "type": "string",
+          "description": "SFTP port.  If port is not provided, then the default port 22 will be set.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "my-password",
+          "name": "ossTopology.networkElementPassword",
+          "required": true,
+          "type": "string",
+          "description": "Password to access the the VNF.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.ftpPortNo",
+          "required": false,
+          "type": "string",
+          "description": "FTP Port Number. If not provided, default should be used.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "10.210.174.58",
+          "name": "ossTopology.nodeIpAddress",
+          "required": true,
+          "type": "string",
+          "description": "The O&M IP Address of the Network Element. Not applicable for AXE compact nodes.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "SSH",
+          "name": "ossTopology.transportProtocol",
+          "required": false,
+          "type": "string",
+          "description": "If transportProtocol is not provided, then the default value SSH will be set",
+          "entry_schema": null,
+          "constraints": [
+            {
+              "valid_values": [
+                "SSH",
+                "TLS"
+              ]
+            }
+          ],
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.script.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for script to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.script.configMap"
+          }
+        },
+        {
+          "default": "influxdb-service2.rontgen010.seli.gic.ericsson.se",
+          "name": "influxdb.ext.apiAccessHostname",
+          "required": true,
+          "type": "string",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "UDM-AUSF",
+          "name": "ossTopology.networkElementType",
+          "required": true,
+          "type": "string",
+          "description": "The Network element type.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.disableLdapUser",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to enable or disable node remote authentication with ENM COM-AA. If the parameter is not provided, the default is enable.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "config.nbi.file.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enabled creation of file configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.enabled"
+          }
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.xml.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for xml to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.xml.configMap"
+          }
+        },
+        {
+          "default": null,
+          "name": "ossTopology.subNetworks",
+          "required": false,
+          "type": "string",
+          "description": "SubNetwork is used for logical grouping of nodes within ENM.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.snmpPort",
+          "required": false,
+          "type": "string",
+          "description": "SNMP port. Not applicable for AXE based nodes. If port is not provided, then the default port 161 will be set.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.snmpSecurityLevel",
+          "required": false,
+          "type": "string",
+          "description": "applicable in case of SNMP V3",
+          "entry_schema": null,
+          "constraints": [
+            {
+              "valid_values": [
+                "AUTH_PRIV",
+                "AUTH_NO_PRIV",
+                "NO_AUTH_NO_PRIV"
+              ]
+            }
+          ],
+          "metadata": null
+        },
+        {
+          "default": "my-user",
+          "name": "ossTopology.networkElementUsername",
+          "required": true,
+          "type": "string",
+          "description": "Username to access the the VNF.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.snmpSecurityName",
+          "required": false,
+          "type": "string",
+          "description": "applicable in case of SNMP V3",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "ossTopology.ossServerHostname",
+          "required": true,
+          "type": "string",
+          "description": "hostname for scripting cluster VM in ENM.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-pm-server.server.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "network-block",
+          "name": "eric-pm-server.server.persistentVolume.storageClass",
+          "required": false,
+          "type": "string",
+          "description": "db",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "heal",
+      "isSupported": false,
+      "operationErrorMessage": "heal operation is missing in VNF LCM interfaces",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "scale",
+      "isSupported": false,
+      "operationErrorMessage": "scale operation is missing in VNF LCM interfaces",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "modify_information",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "rollback",
+      "isSupported": false,
+      "operationErrorMessage": "For Rollback LCM operation it's required that VNFD to contain Interface derived from tosca.interfaces.nfv.ChangeCurrentVnfPackage",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "change_current_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "change_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "default": null,
+          "name": "config.nbi.file.script.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for script to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.script.configMap"
+          }
+        },
+        {
+          "default": "influxdb-service2.todd041.seli.gic.ericsson.se",
+          "name": "influxdb.ext.apiAccessHostname",
+          "required": true,
+          "type": "string",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "todd041.seli.gic.ericsson.se",
+          "name": "pm-testapp.ingress.domain",
+          "required": true,
+          "type": "string",
+          "description": "pm ingress",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "config.nbi.file.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enabled creation of file configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.enabled"
+          }
+        },
+        {
+          "default": true,
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "pm tag",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.xml.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for xml to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.xml.configMap"
+          }
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.json.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for json to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.json.configMap"
+          }
+        },
+        {
+          "default": false,
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-pm-server.server.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "network-block",
+          "name": "eric-pm-server.server.persistentVolume.storageClass",
+          "required": false,
+          "type": "string",
+          "description": "db",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "sync",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "terminate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    }
+  ]
+}

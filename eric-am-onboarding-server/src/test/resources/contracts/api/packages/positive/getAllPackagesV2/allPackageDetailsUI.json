@@ -1,0 +1,149 @@
+[
+  {
+    "appPkgId": "d3def1ce-4cf4-477c-aab3-21cb04e6a381",
+    "appDescriptorId": "d3def1ce-4cf4-477c-aab3-21cb04e6a381",
+    "appProvider": "Ericsson",
+    "appProductName": "SGSN-MME",
+    "appSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "descriptorVersion": "cxp9025898_4r81e08",
+    "usageState": "IN_USE",
+    "onboardingState": "ONBOARDED",
+    "packageSecurityOption": "UNSIGNED",
+    "descriptorModel": null,
+    "helmPackageUrls": null,
+    "supportedOperations": [
+      {
+        "operationName": "instantiate",
+        "supported": true,
+        "error": null
+      }
+    ]
+  },
+  {
+    "appPkgId": "d3def1ce-4cf4-477c-aab3-21cskfjnvlfd",
+    "appDescriptorId": "d3def1ce-4cf4-477c-aab3-21cb04e6a381",
+    "appProvider": "Ericsson",
+    "appProductName": "SGSN-MME",
+    "appSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "descriptorVersion": "cxp9025898_4r81e08",
+    "usageState": "NOT_IN_USE",
+    "onboardingFailureDetails":
+    {
+    "type":"about:blank",
+    "title": null,
+    "status": 422,
+    "detail": "Failed to push layer.",
+    "instance": null
+    },
+    "onboardingState": "ERROR",
+    "packageSecurityOption": null,
+    "descriptorModel": null,
+    "helmPackageUrls": null,
+    "supportedOperations": [
+      {
+        "operationName": "instantiate",
+        "supported": true,
+        "error": null
+      }
+    ]
+  },
+  {
+    "appPkgId": "d3def1ce-4cf4-477c-aab3-21cb04e6a380",
+    "appDescriptorId": "d3def1ce-4cf4-477c-aab3-21cb04e6a380",
+    "appProvider": "Ericsson",
+    "appProductName": "vMME",
+    "appSoftwareVersion": "0.40 (CXS101289_R81E09)",
+    "descriptorVersion": "cxp9025899",
+    "usageState": "NOT_IN_USE",
+    "onboardingState": "UPLOADING",
+    "packageSecurityOption": "UNSIGNED",
+    "descriptorModel": null,
+    "helmPackageUrls": null,
+    "supportedOperations": [
+      {
+        "operationName": "instantiate",
+        "supported": true,
+        "error": null
+      }
+    ]
+  },
+  {
+    "appPkgId": "d3def1ce-4cf4-477c-aab3-21cb04e6a379",
+    "appDescriptorId": "d3def1ce-4cf4-477c-aab3-21cb04e6a379",
+    "appProvider": "Ericsson",
+    "appProductName": "vENM",
+    "appSoftwareVersion": "3.60 (CXS101289_R81E10)",
+    "descriptorVersion": "cxp9027644_4r81e03",
+    "usageState": "IN_USE",
+    "onboardingState": "PROCESSING",
+    "packageSecurityOption": "UNSIGNED",
+    "descriptorModel": null,
+    "helmPackageUrls": null,
+    "supportedOperations": [
+      {
+        "operationName": "instantiate",
+        "supported": true,
+        "error": null
+      }
+    ]
+  },
+  {
+    "appPkgId":"d3def1ce-4cf4-477c-aab3-21cb04e6a383",
+    "appDescriptorId":"d3def1ce-4cf4-477c-aab3-21cb04e6a382",
+    "appProvider":"Ericsson",
+    "appProductName":"vMME",
+    "appSoftwareVersion":"0.40 (CXS101289_R81E09)",
+    "descriptorVersion":"cxp9025899",
+    "usageState":"NOT_IN_USE",
+    "onboardingState":"CREATED",
+    "packageSecurityOption": "UNSIGNED",
+    "descriptorModel": null,
+    "helmPackageUrls": null,
+    "supportedOperations": [
+      {
+        "operationName": "instantiate",
+        "supported": true,
+        "error": null
+      }
+    ]
+  },
+  {
+    "appPkgId":"d2def1ce-4cdff1-477c-aab3-21cb04e6a3236",
+    "appDescriptorId":"d2def1ce-df1cf4-477c-aab3-21cb0224e6a386",
+    "appProvider":"Ericsson",
+    "appProductName":"vMME",
+    "appSoftwareVersion":"0.40 (CXS101289_R81E09)",
+    "descriptorVersion":"cxp9025898_4r81e10",
+    "usageState":"NOT_IN_USE",
+    "onboardingState":"ERROR",
+    "onboardingFailureDetails": {
+      "type": null,
+      "title": null,
+      "status": 422,
+      "detail": "Can not onboard package: VNFD validation failed\n{8eca7b35-72d8-4cab-9fee-138f1c3b9caaa vnfdId is already present}",
+      "instance": null
+    },
+    "packageSecurityOption": "UNSIGNED",
+    "descriptorModel": null,
+    "helmPackageUrls": null,
+    "supportedOperations": [
+      {
+        "operationName": "instantiate",
+        "supported": true,
+        "error": null
+      }
+    ]
+  },
+  {
+    "appPkgId":"d3def1ce-4cf4-477c-aab3-21cb04e6a386",
+    "appDescriptorId":"d3def1ce-4cf4-477c-aab3-21cb04e6a386",
+    "appProvider":"Ericsson",
+    "appProductName":"SGSN-MME",
+    "appSoftwareVersion":"1.20 (CXS101289_R81E10)",
+    "descriptorVersion":"cxp9025898_4r81e10",
+    "usageState":"NOT_IN_USE",
+    "onboardingState":"ONBOARDED",
+    "descriptorModel": null,
+    "helmPackageUrls": null
+  }
+]

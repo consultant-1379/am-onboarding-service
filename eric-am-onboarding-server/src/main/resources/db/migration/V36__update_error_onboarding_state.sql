@@ -1,0 +1,1 @@
+UPDATE app_packages SET onboarding_state = 'ERROR' WHERE onboarding_state = 'CREATED' AND error_details IS NOT NULL;

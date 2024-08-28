@@ -1,0 +1,6 @@
+INSERT INTO app_packages(package_id,descriptor_id,descriptor_version,provider,product_name,software_version,onboarding_state,charts_registry_url, usage_state)
+VALUES ('b3def1ce-4cf4-477c-aab3-21cb04e6a380','b3def1ce-4cf4-477c-aab3-21cb04e6a380','cxp9025898_4r81e08','Ericsson','EPG','1.22 (CXS101289_R81E08)','CREATED','http://10.210.53.96:31028/api/onboarded/charts/Ericsson.SGSN-MME/1.20', 'IN_USE'),
+('e3def1ce-4cf4-477c-aab3-21cb04e6a381','e3def1ce-4cf4-477c-aab3-21cb04e6a381','cxp9025898_4r81e08','Ericsson','SGSN','1.21 (CXS101289_R81E08)','CREATED','http://10.210.53.96:31028/api/onboarded/charts/Ericsson.SGSN-MME/1.20', 'IN_USE'),
+('e3def1ce-4cf4-477c-aab3-21cb04e6a382','e3def1ce-4cf4-477c-aab3-21cb04e6a382','cxp9025898_4r81e08','Ericsson1','vSGSN','1.23 (CXS101289_R81E08)','CREATED','http://10.210.53.96:31028/api/onboarded/charts/Ericsson.SGSN-MME/1.20', 'IN_USE'),
+('e3def1ce-4cf4-477c-aab3-21cb04e6a383','e3def1ce-4cf4-477c-aab3-21cb04e6a383','cxp9025898_4r81e08','Ericsson2','SAPC','1.26 (CXS101289_R81E08)','CREATED','http://10.210.53.96:31028/api/onboarded/charts/Ericsson.SGSN-MME/1.20', 'IN_USE'),
+('e3def1ce-4cf4-477c-aab3-21cb04e6a384','e3def1ce-4cf4-477c-aab3-21cb04e6a384','cxp9025898_4r81e08','Ericsson3','vMRF','1.21 (CXS101289_R81E08)','CREATED','http://10.210.53.96:31028/api/onboarded/charts/Ericsson.SGSN-MME/1.20', 'IN_USE');

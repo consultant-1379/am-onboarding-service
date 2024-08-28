@@ -1,0 +1,10 @@
+{
+  "onboardApp": {
+    "appName": "Cloud_RAN_CU-CP-2.821.2-CXF1010102_2-R822C",
+    "csarDownloadUrl": "cnf-automation/Cloud_RAN_CU-CP-2.821.2-CXF1010102_2-R822C.csar",
+    "appImagesCount": 0,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  }
+}
+

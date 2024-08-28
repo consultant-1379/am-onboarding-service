@@ -1,0 +1,402 @@
+{
+  "appPkgId":"<APP_PKG_ID>",
+  "appDescriptorId":"<APP_PKG_ID>",
+  "appProvider":"Ericsson",
+  "appProductName":"vENM",
+  "appSoftwareVersion":"3.60 (CXS101289_R81E10)",
+  "descriptorVersion":"cxp9027644_4r81e03",
+  "usageState":"IN_USE",
+  "onboardingState":"ONBOARDED",
+  "descriptorModel":{
+    "description":"Package1descriptionisreallllyyylooong1",
+    "node_types":{
+      "Ericsson.SGSN-MME.1.20_(CXS101289_R81E08).cxp9025898_4r81e08":{
+        "derived_from":"tosca.nodes.nfv.VNF",
+        "interfaces":{
+          "Vnflcm":{
+            "type":"tosca.interface.nfv.Vnflcm",
+            "instantiate":{
+              "inputs":{
+                "additional_parameters":{
+                  "type":"ericsson.datatypes.nfv.InstantiateVnfOperationAdditionalParameters"
+                }
+              }
+            },
+            "change_package":{
+              "inputs":{
+                "additional_parameters":{
+                  "type":"ericsson.datatypes.nfv.UpgradeVnfOperationAdditionalParameters"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "data_types":{
+      "ericsson.datatypes.nfv.InstantiateVnfOperationAdditionalParameters":{
+        "derived_from":"tosca.datatypes.nfv.VnfOperationAdditionalParameters",
+        "properties":{
+          "clusterIp":{
+            "description":"SampledescriptionforclusterIp",
+            "metadata":{
+              "chart_param":"server.service.clusterIP"
+            },
+            "default":null,
+            "constraints":[
+              {
+                "pattern":"[0-9]+.[0-9]+.[0-9]+.[0-9]+"
+              }
+            ],
+            "required":true
+          },
+          "etf_name":{
+            "description":"Sampledescriptionforglobal.images.etf.name",
+            "metadata":{
+
+            },
+            "type":"string",
+            "default":null,
+            "required":false
+          },
+          "internalServiceEndpoint_port":{
+            "description":"Sampledescriptionforinternal_service_port",
+            "type":"integer",
+            "default":"25161",
+            "constraints":[
+              {
+                "valid_values":[
+                  "161",
+                  "25161"
+                ]
+              }
+            ],
+            "required":true
+          },
+          "ossTopology.sshPortNo":{
+            "description":"OssTopology_sshPortNo",
+            "type":"integer",
+            "default":22,
+            "required":false
+          },
+          "ossTopology.disableLdapUser":{
+            "description":"SampledescriptionfordisableLdapUser",
+            "metadata":{
+              "chart_param":"server.service.disableLdapUser"
+            },
+            "type":"boolean",
+            "required":false
+          },
+          "loadBalancerIP":{
+            "description":"SampledescriptionforloadBalancerIP",
+            "metadata":{
+              "chart_param":"server.service.loadBalancerIP"
+            },
+            "type":"string",
+            "default":null,
+            "constraints":[
+              {
+                "pattern":"[0-9]+.[0-9]+.[0-9]+.[0-9]+"
+              }
+            ],
+            "required":true
+          },
+          "date":{
+            "description":"Sampledescriptionforservice",
+            "metadata":{
+              "chart_param":"server.service.date"
+            },
+            "type":"timestamp",
+            "default":"2009-12-01",
+            "required":false
+          },
+          "eric-pc-sm.eric-pc-sm-controller.configMap":{
+            "description": "Sampledescriptionforeric-pc-sm.eric-pc-sm-controller.configMap",
+            "metadata": {
+              "chart_param": "eric-pc-sm.eric-pc-sm-controller.configMap"
+            },
+            "type": "file",
+            "default": null,
+            "required": false
+          },
+          "listType": {
+            "description": "List of strings with default values required",
+            "type": "list",
+            "entry_schema": {
+              "type": "string"},
+            "required": true,
+            "default": ["defaultString1","defaultString2"]
+          },
+          "listTypeNotRequired": {
+            "description": "List of strings without default values and not required",
+            "type": "list",
+            "entry_schema": {
+              "type": "string"},
+            "required": false
+          },
+          "listTypeOfList": {
+            "description": "List of lists of strings with default values required",
+            "type": "list",
+            "entry_schema": {
+              "type": "list",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default":  [["test string 1", "test string 2"], ["test string 1", "test string 2"]]
+          },
+          "listTypeOfMap": {
+            "description": "List of maps of strings with default values required",
+            "type": "list",
+            "entry_schema": {
+              "type": "map",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default": [{"key1" : "test string 1", "key2" : "test string 2"}, {"key3" : "test string 3", "key4" : "test string 4"}]
+          },
+          "mapType": {
+            "description": "Map of strings with default values required",
+            "type": "map",
+            "entry_schema": {
+              "type": "string"
+            },
+            "default": {"key1" : "value1", "key2" : "value2"},
+            "required": true
+          },
+          "mapTypeNotRequired": {
+            "description": "Map of strings without default values and not required",
+            "type": "map",
+            "entry_schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          "mapTypeOfList": {
+            "description": "Map of lists of strings with default values required",
+            "type": "map",
+            "entry_schema": {
+              "type": "list",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default": {"key1" : ["test string 1", "test string 2"], "key2" : ["test string 3", "test string 4"]}
+          },
+          "mapTypeOfMap": {
+            "description": "Map of maps of strings with default values required",
+            "type": "map",
+            "entry_schema": {
+              "type": "map",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default": {"key1" : {"key11" : "test str 11", "key12" : "test str 12"}, "key2" : {"key21" : "test str 21", "key22" : "test str 22"}}
+          },
+          "values.yaml": {
+            "type": "string",
+            "required": false,
+            "description": "This property can contain the contents of a values.yaml file in escaped json format"
+          }
+        }
+      },
+      "ericsson.datatypes.nfv.UpgradeVnfOperationAdditionalParameters":{
+        "derived_from":"tosca.datatypes.nfv.VnfOperationAdditionalParameters",
+        "properties":{
+          "clusterIp":{
+            "description":"SampledescriptionforclusterIp",
+            "metadata":{
+              "chart_param":"server.service.clusterIP"
+            },
+            "default":null,
+            "constraints":[
+              {
+                "pattern":"[0-9]+.[0-9]+.[0-9]+.[0-9]+"
+              }
+            ],
+            "required":true
+          },
+          "etf_name":{
+            "description":"Sampledescriptionforglobal.images.etf.name",
+            "metadata":{
+
+            },
+            "type":"string",
+            "default":null,
+            "required":false
+          },
+          "internalServiceEndpoint_port":{
+            "description":"Sampledescriptionforinternal_service_port",
+            "type":"integer",
+            "default":"25161",
+            "constraints":[
+              {
+                "valid_values":[
+                  "161",
+                  "25161"
+                ]
+              }
+            ],
+            "required":true
+          },
+          "ossTopology.sshPortNo":{
+            "description":"OssTopology_sshPortNo",
+            "type":"integer",
+            "default":22,
+            "required":false
+          },
+          "disableLdapUser":{
+            "description":"SampledescriptionfordisableLdapUser",
+            "metadata":{
+              "chart_param":"server.service.disableLdapUser"
+            },
+            "type":"boolean",
+            "required":false
+          },
+          "loadBalancerIP":{
+            "description":"SampledescriptionforloadBalancerIP",
+            "metadata":{
+              "chart_param":"server.service.loadBalancerIP"
+            },
+            "type":"string",
+            "default":null,
+            "constraints":[
+              {
+                "pattern":"[0-9]+.[0-9]+.[0-9]+.[0-9]+"
+              }
+            ],
+            "required":true
+          },
+          "date":{
+            "description":"Sampledescriptionforservice",
+            "metadata":{
+              "chart_param":"server.service.date"
+            },
+            "type":"timestamp",
+            "default":"2009-12-01",
+            "required":false
+          },
+          "eric-pc-sm.eric-pc-sm-controller.configMap":{
+            "description": "Sampledescriptionforeric-pc-sm.eric-pc-sm-controller.configMap",
+            "metadata": {
+              "chart_param": "eric-pc-sm.eric-pc-sm-controller.configMap"
+            },
+            "type": "file",
+            "default": null,
+            "required": false
+          },
+          "listType": {
+            "description": "List of strings with default values required",
+            "type": "list",
+            "entry_schema": {
+              "type": "string"},
+            "required": true,
+            "default": ["defaultString1","defaultString2"]
+          },
+          "listTypeNotRequired": {
+            "description": "List of strings without default values and not required",
+            "type": "list",
+            "entry_schema": {
+              "type": "string"},
+            "required": false
+          },
+          "listTypeOfList": {
+            "description": "List of lists of strings with default values required",
+            "type": "list",
+            "entry_schema": {
+              "type": "list",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default":  [["test string 1", "test string 2"], ["test string 1", "test string 2"]]
+          },
+          "listTypeOfMap": {
+            "description": "List of maps of strings with default values required",
+            "type": "list",
+            "entry_schema": {
+              "type": "map",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default": [{"key1" : "test string 1", "key2" : "test string 2"}, {"key3" : "test string 3", "key4" : "test string 4"}]
+          },
+          "mapType": {
+            "description": "Map of strings with default values required",
+            "type": "map",
+            "entry_schema": {
+              "type": "string"
+            },
+            "default": {"key1" : "value1", "key2" : "value2"},
+            "required": true
+          },
+          "mapTypeNotRequired": {
+            "description": "Map of strings without default values and not required",
+            "type": "map",
+            "entry_schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          "mapTypeOfList": {
+            "description": "Map of lists of strings with default values required",
+            "type": "map",
+            "entry_schema": {
+              "type": "list",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default": {"key1" : ["test string 1", "test string 2"], "key2" : ["test string 3", "test string 4"]}
+          },
+          "mapTypeOfMap": {
+            "description": "Map of maps of strings with default values required",
+            "type": "map",
+            "entry_schema": {
+              "type": "map",
+              "entry_schema": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "default": {"key1" : {"key11" : "test str 11", "key12" : "test str 12"}, "key2" : {"key21" : "test str 21", "key22" : "test str 22"}}
+          },
+          "values.yaml": {
+            "type": "string",
+            "required": false,
+            "description": "This property can contain the contents of a values.yaml file in escaped json format"
+          }
+        }
+      }
+    }
+  },
+  "helmPackageUrls": [
+    {
+      "chartUrl": "sample-helm1.tgz",
+      "chartName": "sample-helm1",
+      "chartVersion": "1.0.0",
+      "chartType": "CNF",
+      "chartArtifactKey": "helm_package1",
+      "priority": 1
+    },
+    {
+      "chartUrl": "sample-helm2.tgz",
+      "chartName": "sample-helm2",
+      "chartVersion": "1.0.0",
+      "chartType": "CNF",
+      "chartArtifactKey": "helm_package2",
+      "priority": 2
+    }
+  ],
+  "supportedOperations": []
+}

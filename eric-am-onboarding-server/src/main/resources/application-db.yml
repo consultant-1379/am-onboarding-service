@@ -1,0 +1,45 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+#To run in local development mode Launch a postgres DB with below command
+#Cnnect to DB and create testdb database
+#docker run --name some-postgres -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
+#run applicationserver with following: -Dspring.profiles.active=db
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: postgres
+    password: postgres
+    hikari:
+      data-source-properties: stringtype=unspecified
+  flyway.locations: classpath:db/migration,classpath:db/dev
+  jpa:
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+debug: true
+
+onboarding:
+  skipToscaoValidation: false

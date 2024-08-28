@@ -1,0 +1,50 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      data-source-properties: stringtype=unspecified
+      maximumPoolSize: 2
+
+  flyway.locations: classpath:db/migration,classpath:db/dev
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+docker:
+    registry:
+      address: "testRegistry.testRegistrySpace.testWebsite.com"
+      defaultProject: "library"
+
+logging:
+  config: ${LOGBACK_CONFIG_FILE:}
+
+onboarding:
+    root_ca_path: ${project.basedir}/src/test/resources/ca.pem
+    skipToscaoValidation: false
+
+BASIC_AUTH_PASS: test123
+BASIC_AUTH_USER: test
+url: localhost

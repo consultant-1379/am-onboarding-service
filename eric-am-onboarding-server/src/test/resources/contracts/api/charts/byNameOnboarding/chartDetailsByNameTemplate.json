@@ -1,0 +1,13 @@
+[ {
+  "name" : "<CHART_NAME>",
+  "home" : "https://www.postgresql.org/",
+  "sources" : [ "https://github.com/kubernetes/charts", "https://github.com/docker-library/postgres" ],
+  "version" : "8.7.0+66",
+  "description" : "Chart for Document DB PG, which encapsulates PostgreSQL - an Object-relational database management system (ORDBMS).",
+  "keywords" : [ "postgresql", "postgres", "database", "sql" ],
+  "icon" : "https://www.postgresql.org/media/img/about/press/elephant.png",
+  "appVersion" : "10.5",
+  "urls" : [ "charts/eric-data-document-database-pg-8.7.0+66.tgz" ],
+  "created" : "2018-11-15T15:10:33.362778136Z",
+  "digest" : "99d5e2a0e8d080011eab45a20c4e6737f10034b72e67d7246ceb52928f69c61e"
+} ]

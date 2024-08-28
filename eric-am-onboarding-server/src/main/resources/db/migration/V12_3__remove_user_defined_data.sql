@@ -1,0 +1,1 @@
+ALTER TABLE app_packages DROP COLUMN user_defined_data;

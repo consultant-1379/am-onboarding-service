@@ -1,0 +1,282 @@
+{
+  "onboardApp": {
+    "appName": "test-levels-with-mapping",
+    "csarDownloadUrl": "/tmp/spider-app-levels-with-mapping-1.1.11-imageless.csar",
+    "appImagesCount": 1,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  },
+  "operations": [
+    {
+      "operationName": "instantiate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "default": "influxdb-service2.rontgen010.seli.gic.ericsson.se",
+          "name": "influxdb.ext.apiAccessHostname",
+          "required": true,
+          "type": "string",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "rontgen010.seli.gic.ericsson.se",
+          "name": "pm-testapp.ingress.domain",
+          "required": true,
+          "type": "string",
+          "description": "pm ingress",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "mapType",
+          "required": false,
+          "type": "map",
+          "description": "map of strings with default values not required",
+          "entry_schema": {
+            "type": "string"
+          },
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "config.nbi.file.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enabled creation of file configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.enabled"
+          }
+        },
+        {
+          "default": null,
+          "name": "values.yaml",
+          "required": false,
+          "type": "string",
+          "description": "This property can contain the contents of a values.yaml file in escaped json format",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "pm tag",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "listType",
+          "required": false,
+          "type": "list",
+          "description": "list of strings with default values not required",
+          "entry_schema": {
+            "type": "string"
+          },
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-pm-server.server.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "network-block",
+          "name": "eric-pm-server.server.persistentVolume.storageClass",
+          "required": false,
+          "type": "string",
+          "description": "db",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "heal",
+      "isSupported": false,
+      "operationErrorMessage": "heal operation is missing in VNF LCM interfaces",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "scale",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "modify_information",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "rollback",
+      "isSupported": false,
+      "operationErrorMessage": "For Rollback LCM operation it's required that VNFD to contain Interface derived from tosca.interfaces.nfv.ChangeCurrentVnfPackage",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "change_current_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "change_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "default": "influxdb-service2.todd041.seli.gic.ericsson.se",
+          "name": "influxdb.ext.apiAccessHostname",
+          "required": true,
+          "type": "string",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "todd041.seli.gic.ericsson.se",
+          "name": "pm-testapp.ingress.domain",
+          "required": true,
+          "type": "string",
+          "description": "pm ingress",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "config.nbi.file.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enabled creation of file configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.enabled"
+          }
+        },
+        {
+          "default": null,
+          "name": "values.yaml",
+          "required": false,
+          "type": "string",
+          "description": "This property can contain the contents of a values.yaml file in escaped json format",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "pm tag",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-pm-server.server.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "network-block",
+          "name": "eric-pm-server.server.persistentVolume.storageClass",
+          "required": false,
+          "type": "string",
+          "description": "db",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "sync",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "terminate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    }
+  ]
+}

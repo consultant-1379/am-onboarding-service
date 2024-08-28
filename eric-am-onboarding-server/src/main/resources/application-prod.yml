@@ -1,0 +1,31 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+spring:
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      data-source-properties: stringtype=unspecified
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            # Included to hide exception which does not fail startup. More info: https://hibernate.atlassian.net/browse/HHH-12368
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect

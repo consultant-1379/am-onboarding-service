@@ -1,0 +1,10 @@
+{
+  "onboardApp":{
+    "appName": "acceptance-sample-different-chart",
+    "csarDownloadUrl": "/tmp/acceptance-sample-different-chart.csar",
+    "appImagesCount": 1,
+    "skipImageValidation": "false",
+    "destinationDescriptorIds": []
+  },
+  "operations": []
+}

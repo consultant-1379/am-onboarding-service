@@ -1,0 +1,7 @@
+CSAR-Version: '1.1'
+Created-By: Ericsson
+Entry-Definitions: Definitions/sampledescriptor-0.0.1-223.yaml
+Entry-Helm-Definitions: Definitions/OtherTemplates/sampledescriptor-0.0.1-223.tgz
+Entry-Images: Files/images/docker.tar
+Entry-Manifest: sampledescriptor-0.0.1-223.mf
+TOSCA-Meta-File-Version: '1.0'

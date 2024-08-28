@@ -1,0 +1,10 @@
+{
+  "onboardApp": {
+    "appName": "test-helmfile",
+    "csarDownloadUrl": "/tmp/spider-app-a-1.1.0-imageless.csar",
+    "appImagesCount": 0,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  },
+  "operations": []
+}

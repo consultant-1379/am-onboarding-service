@@ -1,0 +1,10 @@
+{
+  "type":[
+    "SAPC",
+    "SASN",
+    "SGSN-MME"
+  ],
+  "provider":[],
+  "packageVersion":[],
+  "softwareVersion":[]
+}

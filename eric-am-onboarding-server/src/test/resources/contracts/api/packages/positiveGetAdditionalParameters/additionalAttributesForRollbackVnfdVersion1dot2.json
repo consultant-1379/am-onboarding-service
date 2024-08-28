@@ -1,0 +1,12 @@
+[
+  {
+    "default": "rollback-operation-from-multi-b-to-multi-a",
+    "name": "data_conversion_identifier",
+    "required": false,
+    "type": "string",
+    "description": null,
+    "entry_schema": null,
+    "constraints": null,
+    "metadata": null
+  }
+]

@@ -1,0 +1,858 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: VNF Descriptor for Ericsson Packet Core Controller
+
+imports:
+  - etsi_nfv_sol001_vnfd_2_5_1_types.yaml
+
+data_types:
+  # Use a prefix which equals the name of the VNF node type instead of .ericsson
+  # to avoid name collision when the VNF type definition file is imported in an NSD
+  # ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.InstantiateVnfOperationAdditionalParameters
+  # For example: ericsson.PCC.AXM90107_1.CXP9037448_1.R31A.datatypes.nfv.InstantiateVnfOperationAdditionalParameters
+  ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.InstantiateVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      namespace:
+        type: string
+        description: The namespace the application is to be deployed into.
+        required: false
+        default: default
+
+      cleanUpResources:
+        type: boolean
+        description: Remove the resources on the cluster that are associated
+          with the application, including the Persistent Volume Claims (PVCs)
+          and Persistent Volumes.
+        required: false
+        default: false
+
+      applicationTimeOut:
+        type: integer
+        description: Maximum time allocated for the application to instantiate.
+          When the package has multiple Helm charts, the specified
+          applicationTimeOut is multiplied by the number of Helm charts.
+        required: false
+        default: 1200
+
+      commandTimeOut:
+        type: integer
+        description: Maximum time allocated for helm/kubectl commands to
+          execute. If the time value is greater than the applicationTimeOut
+          value, the value is set as the applicationTimeOut value.
+        required: false
+        default: 1200
+
+      pvcTimeOut:
+        type: integer
+        description: Specifies the time to wait for PVCs to delete.
+          Only applicable if cleanUpResources is set to true.
+        required: false
+        default: 100
+
+      skipVerification:
+        type: boolean
+        description: Flag indicating whether to bypass the application verification checks.
+        required: false
+        default: false
+
+      skipJobVerification:
+        type: boolean
+        description: Flag indicating whether to bypass verification of pods created as part of Job.
+        required: false
+        default: true
+
+      disableOpenapiValidation:
+        type: boolean
+        description: Flag indicating whether to validate rendered templates against the Kubernetes OpenAPI Schema.
+        required: false
+        default: true
+
+      helmWait:
+        type: boolean
+        description: If set, waits until all pods, PVCs, services, and minimum
+          number of pods of a deployment are in a ready state before marking the
+          release as successful. The wait time is specified in commandTimeOut.
+        required: false
+        default: false
+
+      helmNoHooks:
+        type: boolean
+        description: If set, adds --no-hooks to the helm command.
+        required: false
+        default: false
+
+      addNodeToOSS:
+        type: boolean
+        description: The value indicates whether to add the network element to ENM after instantiated.
+        required: false
+        default: false
+
+      ossTopology.managedElementId:
+        type: string
+        description: 'The same as the NetworkElement Managed Object (MO) name.
+          This matches the MeContext MO name, if it exists, and is case sensitive.
+          Some characters are restricted in ENM system models. These cannot be used in the networkElementId attribute.
+          The value cannot contain the special characters =,%{}<>:"/\|?* and all ASCII characters below or equal to hexadecimal 1F.
+          If no value is provided, a combination of <cluster-name>-<namespace>-<vnf Instance name> is set for this parameter.'
+        required: false
+
+      ossTopology.timeZone:
+        type: string
+        description: The local time zone of the node.
+          Use the following command to get the appropriate value
+          "cmedit describe NetworkElement.timeZone" in ENM.
+          It is mandatory when addNodeToOSS parameter is set to true.
+        required: false
+
+      ossTopology.networkElementType:
+        constraints:
+          - valid_values:
+              - PCC
+        type: string
+        description: The network element type.
+          It is mandatory when addNodeToOSS parameter is set to true.
+        required: false
+
+      ossTopology.networkElementVersion:
+        type: string
+        description: The version of the network element.
+          In ENM, this parameter refers to ossModelIdentity, such as 1.0.
+          To execute the command "cmedit describe --neType PCC" in
+          ENM to get the available network element version.
+          It is mandatory depending on the networkElementType.
+        required: false
+
+      ossTopology.networkElementUsername:
+        type: string
+        description: Username for login by ENM.
+          It is mandatory when addNodeToOSS parameter is set to true.
+        required: false
+
+      ossTopology.networkElementPassword:
+        type: string
+        description: Password for login by ENM.
+          For security reasons, this value must be Base64 encoded.
+          It is mandatory when addNodeToOSS parameter is set to true.
+        required: false
+
+      ossTopology.nodeIpAddress:
+        type: string
+        description: The O&M IP Address of the Network Element.
+          It is mandatory when addNodeToOSS parameter is set to true.
+        required: false
+
+      ossTopology.communityString:
+        type: string
+        description: Community string for SNMP.
+          If not provided, the default string nm-public is set.
+        required: false
+
+      ossTopology.snmpPort:
+        type: string
+        description: SNMP port.
+          If a port is not provided, the default port 161 is set.
+        required: false
+
+      ossTopology.snmpVersion:
+        constraints:
+          - valid_values:
+              - V2c
+              - SNMP_V3
+        type: string
+        description: SNMP Version.
+        required: false
+
+      ossTopology.snmpSecurityLevel:
+        constraints:
+          - valid_values:
+              - AUTH_PRIV
+              - AUTH_NO_PRIV
+              - NO_AUTH_NO_PRIV
+        type: string
+        description: It is the permitted level of security within a security model.
+          It is mandatory when addNodeToOSS parameter is set to true.
+        required: false
+
+      ossTopology.snmpSecurityName:
+        type: string
+        description: The security name for SNMP V3.
+          It is mandatory when addNodeToOSS parameter is set to true and SNMP V3.
+        required: false
+
+      ossTopology.snmpAuthProtocol:
+        type: string
+        description: Authentication protocol used to authorize the identity of user.
+          If not provided, it is defaulted to MD5.
+          Applicable if SNMP V3 is used and the security level is AUTH_NO_PRIV or AUTH_PRIV.
+          Example values MD5, SHA1.
+        required: false
+
+      ossTopology.snmpPrivProtocol:
+        type: string
+        description: Privacy Protocol used for encryption of SNMP v3 messages to ensure confidentiality of data.
+          If not provided, it is defaulted to AES128 for ENM.
+          Applicable if SNMP V3 is used and the security level is AUTH_PRIV.
+          Example values for ENM AES128, DES.
+        required: false
+
+      ossTopology.snmpAuthPassword:
+        type: string
+        description: Applicable only for ENM when SNMP V3 is used and the security level is AUTH_NO_PRIV or AUTH_PRIV.
+          Password set for authentication with the provided Authentication Protocol for secure authorization.
+          8 characters minimum. The password must be base64 encoded.
+        required: false
+
+      ossTopology.snmpPrivacyPassword:
+        type: string
+        description: Applicable only for ENM when SNMP V3 is used and the security level is AUTH_PRIV.
+          Password set for authentication with the provided Privacy Protocol for secure authorization.
+          8 characters minimum. The password must be base64 encoded.
+        required: false
+
+      ossTopology.pmFunction:
+        type: boolean
+        description: PmFunction is used to switch on and off PMIC Mediation flows for each Network Element.
+          If PmFunction is on, all file collection, subscription activation, subscription deactivation, scanner polling,
+          and scanner master functionality is available for the Network Element.
+          Default value is false.
+        required: false
+
+      ossTopology.cmNodeHeartbeatSupervision:
+        type: boolean
+        description: Enabling CM Supervision copies the current status of the configuration data of the node into ENM and enables CM Notifications.
+          Enabling CM Notifications ensures that the node notifies ENM of any configuration data changes.
+          Default value is true.
+        required: false
+
+      ossTopology.fmAlarmSupervision:
+        type: boolean
+        description: FmAlarmSupervision is used to enable or disable alarms in case of any failures.
+          Default value is true.
+        required: false
+
+      ossTopology.netConfPort:
+        type: string
+        description: NetConf port number.
+          If not provided, the default port number 830 must be set.
+          It is mandatory when addNodeToOSS parameter is set to true.
+        required: false
+
+      ossTopology.subNetworks:
+        type: string
+        description: SubNetwork is used for logical grouping of nodes within ENM.
+          It can contain one or more child subnetwork.
+          If only one subNetwork, then the format is SubNetwork=CL.
+          If more than one child SubNetwork, the format is SubNetwork=CL,SubNetwork=COMS.
+          That is SubNetwork has to be separated by a comma (,).
+        required: false
+
+      ossTopology.transportProtocol:
+        type: string
+        description: If transportProtocol is not provided, the default value SSH is used.
+          Possible values are SSH and TLS.
+        required: false
+
+      values.yaml:
+        type: string
+        description: The parameter can be used to convey the values that are not modelled in other additonalParameters.
+        required: false
+
+  ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.TerminateVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      cleanUpResources:
+        type: boolean
+        description: 'Remove Persistent Volume Claims and Persistent Volumes of
+          an application. Note: cleanUpResources removes the PVCs and PVs only
+          when those resources have the Kubernetes instance label
+          (app.kubernetes.io/instance: <RELEASE_NAME>).'
+        required: false
+        default: false
+
+      pvcTimeOut:
+        type: integer
+        description: Specifies the time to wait for PVC to delete.
+        required: false
+        default: 100
+
+      applicationTimeOut:
+        type: integer
+        description: Maximum time allocated for application to instantiate.
+          When the package has multiple Helm charts, the specified
+          applicationTimeOut is multiplied by the number of Helm charts.
+        required: false
+        default: 3600
+
+      skipVerification:
+        type: boolean
+        description: Flag indicating whether to bypass the Application Verification Checks.
+        required: false
+        default: false
+
+      skipJobVerification:
+        type: boolean
+        description: Flag indicating whether to bypass verification of pods created as part of Job.
+        required: false
+        default: false
+
+      clusterName:
+        type: string
+        description: The name of the chosen cluster.
+        required: false
+
+      commandTimeOut:
+        type: integer
+        description: Maximum time allocated for helm/kubectl commands to execute.
+        required: false
+        default: 300
+  ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.VnfInfoModifiableAttributes:
+    derived_from: tosca.datatypes.nfv.VnfInfoModifiableAttributes
+    properties:
+      extensions:
+        required: false
+        type: ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.VnfInfoModifiableAttributesExtensions
+  ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.VnfInfoModifiableAttributesExtensions:
+    derived_from: tosca.datatypes.nfv.VnfInfoModifiableAttributesExtensions
+    properties:
+      vnfControlledScaling:
+        type: map
+        description: Represents for each aspect the controlled scaling method, either Manual or CISM
+        required: false
+        entry_schema:
+          type: string
+          constraints:
+            - valid_values: [ "ManualControlled", "CISMControlled" ]
+        default:
+          eric-pc-mm-mobility: ManualControlled
+          eric-pc-mm-forwarder: ManualControlled
+          eric-pc-mm-sctp: ManualControlled
+          eric-pc-sm-diameter: ManualControlled
+          eric-pc-sm-http-client: ManualControlled
+          eric-pc-sm-notification-forwarder: ManualControlled
+          eric-pc-sm-nsmf-forwarder: ManualControlled
+          eric-pc-sm-sgw-session: ManualControlled
+          eric-pc-sm-smf-pgw-session: ManualControlled
+          eric-pc-sm-udp-forwarder: ManualControlled
+
+node_types:
+  Ericsson.PCC.AXB25019_1.CXP9037447_1.R42B:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        type: string
+        constraints: [ valid_values: [ cf4c1e76-771e-43c5-b431-f3dc756491b7 ] ]
+        default: cf4c1e76-771e-43c5-b431-f3dc756491b7
+      descriptor_version:
+        type: string
+        constraints: [ valid_values: [ CXP9037447_1.R42B ] ]
+        default: CXP9037447_1.R42B
+      provider:
+        type: string
+        constraints: [ valid_values: [ Ericsson ] ]
+        default: Ericsson
+      product_name:
+        type: string
+        constraints: [ valid_values: [ PCC ] ]
+        default: PCC
+      software_version:
+        type: string
+        constraints: [ valid_values: [ 'CXP9037447_1.R42B' ] ]
+        default: 'CXP9037447_1.R42B'
+      # TODO: VNFM identifier to be defined
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+          constraints: [ valid_values: [ '3881:E-VNFM' ] ]
+        default: [ '3881:E-VNFM' ]
+      flavour_id:
+        type: string
+        constraints: [ valid_values: [ default ] ]
+        default: default
+      flavour_description:
+        type: string
+        default: ''
+      modifiable_attributes:
+        required: false
+        type: ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.VnfInfoModifiableAttributes
+
+    interfaces:
+      Vnflcm:
+        type: tosca.interfaces.nfv.Vnflcm
+        instantiate:
+          inputs:
+            helm_packages:
+              type: list
+              entry_schema:
+                type: string
+              required: true
+              description: list of all helm charts
+            additional_parameters:
+              type: ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.InstantiateVnfOperationAdditionalParameters
+              required: false
+        terminate:
+          inputs:
+            additional_parameters:
+              type: ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.TerminateVnfOperationAdditionalParameters
+              required: false
+        scale: {}
+
+    artifacts:
+      helm_package:
+        description: Helm package associated with this descriptor
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/eric-pc-controller-1.41.1-51.tgz
+      software_images:
+        description: Location of the software images being used in this package
+        type: tosca.artifacts.nfv.SwImage
+        file: Files/images/docker.tar
+      scaling_mapping:
+        description: Scaling Mapping file associated with this descriptor
+        type: tosca.artifacts.File
+        file: vnfd/valid_scaling_mapping_file.yaml
+topology_template:
+  inputs:
+    modifiable_attributes:
+      type: ericsson.PCC.AXB25019_1.CXP9037447_1.R42B.datatypes.nfv.VnfInfoModifiableAttributes
+  node_templates:
+    pcc:
+      type: Ericsson.PCC.AXB25019_1.CXP9037447_1.R42B
+      properties:
+        modifiable_attributes: { get_input: modifiable_attributes }
+      interfaces:
+        Vnflcm:
+          instantiate:
+            inputs:
+              helm_packages: [get_artifact: [SELF, helm_package]]
+          terminate: {}
+          scale: {}
+    eric-pc-mm-mobility:
+      properties:
+        description: The eric-pc-mm-mobility VNFC performs MM Mobility service which handles registration and mobility in the PCC. It implements the AMF and the MME signaling logic in accordance with 3GPP standards.
+        name: eric-pc-mm-mobility
+        vdu_profile:
+          max_number_of_instances: 64
+          min_number_of_instances: 2
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-mm-forwarder:
+      properties:
+        description: Handles all ingress and egress traffic for non-Kubernetes networking.
+        name: eric-pc-mm-forwarder
+        vdu_profile:
+          max_number_of_instances: 16
+          min_number_of_instances: 3
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-mm-sctp:
+      properties:
+        description: Handles all SCTP signaling.
+        name: eric-pc-mm-sctp
+        vdu_profile:
+          max_number_of_instances: 64
+          min_number_of_instances: 2
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-sm-diameter:
+      properties:
+        description: Handles Diameter signaling.
+        name: eric-pc-sm-diameter
+        vdu_profile:
+          max_number_of_instances: 16
+          min_number_of_instances: 1
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-sm-http-client:
+      properties:
+        description: Handles Kubernetes networking egress traffic over SBIs from the SMF.
+        name: eric-pc-sm-http-client
+        vdu_profile:
+          max_number_of_instances: 16
+          min_number_of_instances: 1
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-sm-notification-forwarder:
+      properties:
+        description: Handles the SMF subscription or the SMF notifications.
+        name: eric-pc-sm-notification-forwarder
+        vdu_profile:
+          max_number_of_instances: 16
+          min_number_of_instances: 1
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-sm-nsmf-forwarder:
+      properties:
+        description: Handles the Nsmf SBIs.
+        name: eric-pc-sm-nsmf-forwarder
+        vdu_profile:
+          max_number_of_instances: 16
+          min_number_of_instances: 1
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-sm-sgw-session:
+      properties:
+        description: Handles the SGW-C session control.
+        name: eric-pc-sm-sgw-session
+        vdu_profile:
+          max_number_of_instances: 32
+          min_number_of_instances: 2
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-sm-smf-pgw-session:
+      properties:
+        description: Handles the PGW-C and the SMF session control.
+        name: eric-pc-sm-smf-pgw-session
+        vdu_profile:
+          max_number_of_instances: 32
+          min_number_of_instances: 2
+      type: tosca.nodes.nfv.Vdu.Compute
+    eric-pc-sm-udp-forwarder:
+      properties:
+        description: Handles all ingress and egress traffic for Kubernetes networking.
+        name: eric-pc-sm-udp-forwarder
+        vdu_profile:
+          max_number_of_instances: 16
+          min_number_of_instances: 1
+      type: tosca.nodes.nfv.Vdu.Compute
+  policies:
+    - scaling_aspects:
+        properties:
+          aspects:
+            eric-pc-mm-mobility:
+              description: Scale level 0-62 maps to 2-64 eric-pc-mm-mobility replicas (1 instance per scale step)
+              max_scale_level: 62
+              name: eric-pc-mm-mobility
+              step_deltas:
+                - delta_1
+            eric-pc-mm-forwarder:
+              description: Scale level 0-13 maps to 3-16 eric-pc-mm-forwarder replicas (1 instance per scale step)
+              max_scale_level: 13
+              name: eric-pc-mm-forwarder
+              step_deltas:
+                - delta_1
+            eric-pc-mm-sctp:
+              description: Scale level 0-62 maps to 2-64 eric-pc-mm-sctp replicas (1 instance per scale step)
+              max_scale_level: 62
+              name: eric-pc-mm-sctp
+              step_deltas:
+                - delta_1
+            eric-pc-sm-diameter:
+              description: Scale level 0-15 maps to 1-16 eric-pc-sm-diameter replicas (1 instance per scale step)
+              max_scale_level: 15
+              name: eric-pc-sm-diameter
+              step_deltas:
+                - delta_1
+            eric-pc-sm-http-client:
+              description: Scale level 0-15 maps to 1-16 eric-pc-sm-http-client replicas (1 instance per scale step)
+              max_scale_level: 15
+              name: eric-pc-sm-http-client
+              step_deltas:
+                - delta_1
+            eric-pc-sm-notification-forwarder:
+              description: Scale level 0-15 maps to 1-16 eric-pc-sm-notification-forwarder replicas (1 instance per scale step)
+              max_scale_level: 15
+              name: eric-pc-sm-notification-forwarder
+              step_deltas:
+                - delta_1
+            eric-pc-sm-nsmf-forwarder:
+              description: Scale level 0-15 maps to 1-16 eric-pc-sm-nsmf-forwarder replicas (1 instance per scale step)
+              max_scale_level: 15
+              name: eric-pc-sm-nsmf-forwarder
+              step_deltas:
+                - delta_1
+            eric-pc-sm-sgw-session:
+              description: Scale level 0-30 maps to 2-32 eric-pc-sm-sgw-session replicas (1 instance per scale step)
+              max_scale_level: 30
+              name: eric-pc-sm-sgw-session
+              step_deltas:
+                - delta_1
+            eric-pc-sm-smf-pgw-session:
+              description: Scale level 0-30 maps to 2-32 eric-pc-sm-smf-pgw-session replicas (1 instance per scale step)
+              max_scale_level: 30
+              name: eric-pc-sm-smf-pgw-session
+              step_deltas:
+                - delta_1
+            eric-pc-sm-udp-forwarder:
+              description: Scale level 0-15 maps to 1-16 eric-pc-sm-udp-forwarder replicas (1 instance per scale step)
+              max_scale_level: 15
+              name: eric-pc-sm-udp-forwarder
+              step_deltas:
+                - delta_1
+        type: tosca.policies.nfv.ScalingAspects
+    - eric-pc-mm-mobility_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 2
+        targets:
+          - eric-pc-mm-mobility
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-mm-mobility_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-mm-mobility
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-mm-mobility
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-mm-forwarder_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 3
+        targets:
+          - eric-pc-mm-forwarder
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-mm-forwarder_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-mm-forwarder
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-mm-forwarder
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-mm-sctp_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 2
+        targets:
+          - eric-pc-mm-sctp
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-mm-sctp_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-mm-sctp
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-mm-sctp
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-sm-diameter_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - eric-pc-sm-diameter
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-sm-diameter_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-sm-diameter
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-sm-diameter
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-sm-http-client_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - eric-pc-sm-http-client
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-sm-http-client_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-sm-http-client
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-sm-http-client
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-sm-notification-forwarder_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - eric-pc-sm-notification-forwarder
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-sm-notification-forwarder_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-sm-notification-forwarder
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-sm-notification-forwarder
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-sm-nsmf-forwarder_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - eric-pc-sm-nsmf-forwarder
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-sm-nsmf-forwarder_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-sm-nsmf-forwarder
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-sm-nsmf-forwarder
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-sm-sgw-session_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 2
+        targets:
+          - eric-pc-sm-sgw-session
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-sm-sgw-session_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-sm-sgw-session
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-sm-sgw-session
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-sm-smf-pgw-session_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 2
+        targets:
+          - eric-pc-sm-smf-pgw-session
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-sm-smf-pgw-session_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-sm-smf-pgw-session
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-sm-smf-pgw-session
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - eric-pc-sm-udp-forwarder_initial_delta:
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - eric-pc-sm-udp-forwarder
+        type: tosca.policies.nfv.VduInitialDelta
+    - eric-pc-sm-udp-forwarder_scaling_aspect_deltas:
+        properties:
+          aspect: eric-pc-sm-udp-forwarder
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pc-sm-udp-forwarder
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+    - instantiation_levels:
+        properties:
+          default_level: default_instantiation_level
+          levels:
+            default_instantiation_level:
+              description: Default instantiation level
+              scale_info:
+                eric-pc-mm-mobility:
+                  scale_level: 0
+                eric-pc-mm-forwarder:
+                  scale_level: 0
+                eric-pc-mm-sctp:
+                  scale_level: 3
+                eric-pc-sm-diameter:
+                  scale_level: 1
+                eric-pc-sm-http-client:
+                  scale_level: 1
+                eric-pc-sm-notification-forwarder:
+                  scale_level: 1
+                eric-pc-sm-nsmf-forwarder:
+                  scale_level: 1
+                eric-pc-sm-sgw-session:
+                  scale_level: 0
+                eric-pc-sm-smf-pgw-session:
+                  scale_level: 0
+                eric-pc-sm-udp-forwarder:
+                  scale_level: 1
+        type: tosca.policies.nfv.InstantiationLevels
+    - eric-pc-mm-mobility_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-mm-mobility
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-mm-forwarder_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 3
+        targets:
+          - eric-pc-mm-forwarder
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-mm-sctp_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 5
+        targets:
+          - eric-pc-mm-sctp
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-sm-diameter_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-sm-diameter
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-sm-http-client_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-sm-http-client
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-sm-notification-forwarder_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-sm-notification-forwarder
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-sm-nsmf-forwarder_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-sm-nsmf-forwarder
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-sm-sgw-session_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-sm-sgw-session
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-sm-smf-pgw-session_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-sm-smf-pgw-session
+        type: tosca.policies.nfv.VduInstantiationLevels
+    - eric-pc-sm-udp-forwarder_instantiation_levels:
+        properties:
+          levels:
+            default_instantiation_level:
+              number_of_instances: 2
+        targets:
+          - eric-pc-sm-udp-forwarder
+        type: tosca.policies.nfv.VduInstantiationLevels

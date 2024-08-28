@@ -1,0 +1,28 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+{{- if not .Values.onboarding.skipCertificateValidation }}
+apiVersion: certm.sec.ericsson.com/v1
+kind: ExternalCertificate
+metadata:
+  name: {{ template "eric-am-onboarding-service.name" . }}-ca-certs
+  labels: {{- include "eric-am-onboarding-service.labels.extended-defaults" . | nindent 4 }}
+  annotations: {{- include "eric-am-onboarding-service.annotations" . | nindent 4 }}
+spec:
+  generated-secret-name: {{ template "eric-am-onboarding-service.name" . }}-certm-ca-certs
+  generated-secret-type: opaque
+  trusted-certificate-list-name: {{ .Values.egress.certm.certificates.trustedCertificateListName | quote }}
+{{- end }}

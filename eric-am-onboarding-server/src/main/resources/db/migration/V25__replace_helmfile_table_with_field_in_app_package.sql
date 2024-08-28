@@ -1,0 +1,4 @@
+DROP TABLE HELMFILES;
+
+ALTER TABLE app_packages
+    ADD COLUMN "helmfile" BYTEA DEFAULT NULL;

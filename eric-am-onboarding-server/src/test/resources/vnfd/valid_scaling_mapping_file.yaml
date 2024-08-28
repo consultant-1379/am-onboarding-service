@@ -1,0 +1,76 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+eric-pc-mm-mobility:
+  Auto-Scaling-MinReplicas-Name: "Search-Engine-DB.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "Search-Engine-DB.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "Search-Engine-DB.replicaCount"
+  Auto-Scaling-Enabled: "Search-Engine-DB.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-mm-forwarder:
+  Auto-Scaling-MinReplicas-Name: "Search-Engine.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "Search-Engine.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "Search-Engine.replicaCount"
+  Auto-Scaling-Enabled: "Search-Engine.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-mm-sctp:
+  Auto-Scaling-MinReplicas-Name: "eric-pm-bulk-reporter.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "eric-pm-bulk-reporter.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "eric-pm-bulk-reporter.replicaCount"
+  Auto-Scaling-Enabled: "eric-pm-bulk-reporter.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-sm-diameter:
+  Auto-Scaling-MinReplicas-Name: "Search-Engine-DB.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "Search-Engine-DB.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "Search-Engine-DB.replicaCount"
+  Auto-Scaling-Enabled: "Search-Engine-DB.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-sm-http-client:
+  Auto-Scaling-MinReplicas-Name: "Search-Engine.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "Search-Engine.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "Search-Engine.replicaCount"
+  Auto-Scaling-Enabled: "Search-Engine.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-sm-notification-forwarder:
+  Auto-Scaling-MinReplicas-Name: "eric-pm-bulk-reporter.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "eric-pm-bulk-reporter.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "eric-pm-bulk-reporter.replicaCount"
+  Auto-Scaling-Enabled: "eric-pm-bulk-reporter.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-sm-nsmf-forwarder:
+  Auto-Scaling-MinReplicas-Name: "Search-Engine-DB.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "Search-Engine-DB.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "Search-Engine-DB.replicaCount"
+  Auto-Scaling-Enabled: "Search-Engine-DB.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-sm-sgw-session:
+  Auto-Scaling-MinReplicas-Name: "Search-Engine.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "Search-Engine.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "Search-Engine.replicaCount"
+  Auto-Scaling-Enabled: "Search-Engine.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-sm-smf-pgw-session:
+  Auto-Scaling-MinReplicas-Name: "eric-pm-bulk-reporter.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "eric-pm-bulk-reporter.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "eric-pm-bulk-reporter.replicaCount"
+  Auto-Scaling-Enabled: "eric-pm-bulk-reporter.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"
+eric-pc-sm-udp-forwarder:
+  Auto-Scaling-MinReplicas-Name: "eric-pm-bulk-reporter.autoscaling.minReplicas"
+  Auto-Scaling-MaxReplicas-Name: "eric-pm-bulk-reporter.autoscaling.maxReplicas"
+  Scaling-Parameter-Name: "eric-pm-bulk-reporter.replicaCount"
+  Auto-Scaling-Enabled: "eric-pm-bulk-reporter.autoscaling.engine.enabled"
+  Mciop-Name: "helm_package"

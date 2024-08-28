@@ -1,0 +1,57 @@
+[
+  {
+    "id": "d3def1ce-4cf4-477c-aab3-21cb04e6a379",
+    "vnfdId": "d3def1ce-4cf4-477c-aab3-21cb04e6a378",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "checksum": null,
+    "softwareImages": [
+      {
+        "id": "docker.io/justwatch/elasticsearch_exporter:1.0.2",
+        "name": null,
+        "provider": null,
+        "version": null,
+        "checksum": null,
+        "containerFormat": null,
+        "diskFormat": null,
+        "createdAt": null,
+        "minDisk": null,
+        "minRam": null,
+        "size": null,
+        "userMetadata": null,
+        "imagePath": "docker.io/justwatch/elasticsearch_exporter:1.0.2"
+      }
+    ],
+    "additionalArtifacts": null,
+    "onboardingState": "ONBOARDED",
+    "operationalState": "ENABLED",
+    "packageSecurityOption": "UNSIGNED",
+    "usageState": "IN_USE",
+    "userDefinedData": null,
+    "_links": {
+      "self": {
+        "href": "http://localhost/api/vnfpkgm/v1/vnf_packages/d3def1ce-4cf4-477c-aab3-21cb04e6a379"
+      }
+    },
+    "helmPackageUrls": [
+      {
+        "chartUrl": "sample-helm1.tgz",
+        "chartName": "sample-helm1",
+        "chartVersion": "1.0.0",
+        "chartType": "CNF",
+        "chartArtifactKey": "helm_package1",
+        "priority": 1
+      },
+      {
+        "chartUrl": "sample-helm2.tgz",
+        "chartName": "sample-helm2",
+        "chartVersion": "1.0.0",
+        "chartType": "CNF",
+        "chartArtifactKey": "helm_package2",
+        "priority": 2
+      }
+    ]
+  }
+]

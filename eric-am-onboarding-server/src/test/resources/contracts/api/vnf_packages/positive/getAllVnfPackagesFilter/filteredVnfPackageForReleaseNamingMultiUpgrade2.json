@@ -1,0 +1,72 @@
+[
+  {
+    "id": "multi-helm-chart-for-release-naming-upgrade-2",
+    "vnfdId": "multi-helm-chart-for-release-naming-upgrade-2",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "checksum": null,
+    "softwareImages": [
+      {
+        "id": "docker.io/justwatch/elasticsearch_exporter:1.0.2",
+        "name": null,
+        "provider": null,
+        "version": null,
+        "checksum": null,
+        "containerFormat": null,
+        "diskFormat": null,
+        "createdAt": null,
+        "minDisk": null,
+        "minRam": null,
+        "size": null,
+        "userMetadata": null,
+        "imagePath": "docker.io/justwatch/elasticsearch_exporter:1.0.2"
+      }
+    ],
+    "additionalArtifacts": null,
+    "onboardingState": "CREATED",
+    "operationalState": "ENABLED",
+    "usageState": "IN_USE",
+    "userDefinedData": null,
+    "_links": {
+      "self": {
+        "href": "http://localhost/api/vnfpkgm/v1/vnf_packages/single-helm-chart-for-release-naming-instantiate"
+      }
+    },
+    "helmPackageUrls": [
+      {
+        "chartUrl": "sample-crd1.tgz",
+        "chartName": "sample-crd1",
+        "chartVersion": "1.0.0",
+        "chartType": "CRD",
+        "chartArtifactKey": "crd_package1",
+        "priority": 1
+      },
+      {
+        "chartUrl": "sample-crd2.tgz",
+        "chartName": "sample-crd2",
+        "chartVersion": "1.0.0",
+        "chartType": "CRD",
+        "chartArtifactKey": "crd_package2",
+        "priority": 2
+      },
+      {
+        "chartUrl": "sample-helm2.tgz",
+        "chartName": "sample-helm2",
+        "chartVersion": "1.0.0",
+        "chartType": "CNF",
+        "chartArtifactKey": "helm_package2",
+        "priority": 3
+      },
+      {
+        "chartUrl": "sample-helm4.tgz",
+        "chartName": "sample-helm4",
+        "chartVersion": "1.0.0",
+        "chartType": "CNF",
+        "chartArtifactKey": "helm_package4",
+        "priority": 4
+      }
+    ]
+  }
+]

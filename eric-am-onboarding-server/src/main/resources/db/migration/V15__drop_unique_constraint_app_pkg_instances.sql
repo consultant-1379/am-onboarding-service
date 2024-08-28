@@ -1,0 +1,1 @@
+ALTER TABLE app_pkg_instances DROP CONSTRAINT app_pkg_instances_instance_id_key;

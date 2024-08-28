@@ -1,0 +1,1 @@
+ALTER TYPE onboarding_state_enum ADD VALUE 'ERROR';

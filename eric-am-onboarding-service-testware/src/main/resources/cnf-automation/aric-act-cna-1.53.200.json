@@ -1,0 +1,10 @@
+{
+  "onboardApp": {
+    "appName": "eric-act-cna-1.53.200",
+    "csarDownloadUrl": "cnf-automation/eric-act-cna-1.53.200.csar",
+    "appImagesCount": 0,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  }
+}
+

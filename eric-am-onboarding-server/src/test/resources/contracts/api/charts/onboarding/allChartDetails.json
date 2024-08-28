@@ -1,0 +1,40 @@
+{
+  "eric-data-document-database-pg" : [ {
+    "name" : "eric-data-document-database-pg",
+    "home" : "https://www.postgresql.org/",
+    "sources" : [ "https://github.com/kubernetes/charts", "https://github.com/docker-library/postgres" ],
+    "version" : "8.7.0+66",
+    "description" : "Chart for Document DB PG, which encapsulates PostgreSQL - an Object-relational database management system (ORDBMS).",
+    "keywords" : [ "postgresql", "postgres", "database", "sql" ],
+    "icon" : "https://www.postgresql.org/media/img/about/press/elephant.png",
+    "appVersion" : "10.5",
+    "urls" : [ "charts/eric-data-document-database-pg-8.7.0+66.tgz" ],
+    "created" : "2018-11-15T15:10:33.362778136Z",
+    "digest" : "99d5e2a0e8d080011eab45a20c4e6737f10034b72e67d7246ceb52928f69c61e"
+  } ],
+  "test-postgres" : [ {
+    "name" : "test-postgres",
+    "home" : "https://www.postgresql.org/",
+    "sources" : [ "https://github.com/kubernetes/charts", "https://github.com/docker-library/postgres" ],
+    "version" : "1.1.0+160",
+    "description" : "Chart for Document DB PG, which encapsulates PostgreSQL - an Object-relational database management system (ORDBMS).",
+    "keywords" : [ "postgresql", "postgres", "database", "sql" ],
+    "icon" : "https://www.postgresql.org/media/img/about/press/elephant.png",
+    "appVersion" : "10.5",
+    "urls" : [ "charts/test-postgres-1.1.0+160.tgz" ],
+    "created" : "2018-11-15T09:19:34.102431532Z",
+    "digest" : "71a491ada99ad1ede1f2f7ce2bed04d12b9976485a13bcd079ed81f33cc88bd5"
+  }, {
+    "name" : "test-postgres",
+    "home" : "https://www.postgresql.org/",
+    "sources" : [ "https://github.com/kubernetes/charts", "https://github.com/docker-library/postgres" ],
+    "version" : "8.7.0+66",
+    "description" : "Chart for Document DB PG, which encapsulates PostgreSQL - an Object-relational database management system (ORDBMS).",
+    "keywords" : [ "postgresql", "postgres", "database", "sql" ],
+    "icon" : "https://www.postgresql.org/media/img/about/press/elephant.png",
+    "appVersion" : "10.5",
+    "urls" : [ "charts/test-postgres-8.7.0+66.tgz" ],
+    "created" : "2018-11-15T09:21:16.934845305Z",
+    "digest" : "745cab33c125697d80573a375a9667741e31a1235f177aedcadc2eb53a41ec29"
+  } ]
+}

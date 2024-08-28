@@ -1,0 +1,22 @@
+{
+  "type":[
+    "SAPC",
+    "SASN",
+    "SGSN-MME"
+  ],
+  "provider":[
+    "Ericsson",
+    "Ericsson1",
+    "Ericsson2",
+    "Ericsson3"
+  ],
+  "packageVersion":[
+    "cxp9025898_4r81e08",
+    "cxp9025898_4r81e09",
+    "cxp9025898_4r81e10",
+    "cxp9025898_4r81e11"
+  ],
+  "softwareVersion":[
+    "1.20 (CXS101289_R81E08)"
+  ]
+}

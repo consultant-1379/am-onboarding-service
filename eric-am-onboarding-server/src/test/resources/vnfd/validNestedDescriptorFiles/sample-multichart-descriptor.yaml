@@ -1,0 +1,39 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: VNF Descriptor for Ericsson SGSN-MME
+
+# INFO:
+# - This is a work-in-progress example VNFD for containerized VNFs in small stack scenario.
+# - Based on ETSI GS NFV-SOL 001 V2.5.1
+
+
+imports:
+  - etsi_nfv_sol001_vnfd_2_5_1_types.yaml
+  - node_type_vnfd.yaml
+
+topology_template:
+  inputs:
+    sample_vnf_flavour_id:
+      type: string
+      description: flavour id to be selected
+  node_templates:
+    SAMPLE-VNF:
+      type: Ericsson.SAMPLE-VNF.1_25_CXS101289_R81E08.cxp9025898_4r81e08
+      properties:
+        flavour_id: { get_input: sample_vnf_flavour_id }

@@ -1,0 +1,2 @@
+INSERT INTO service_model_record (id, service_model_id, package_id, descriptor_id, service_model_name) VALUES (1,
+'1594a376-6f67-4d13-8d28-58e07028956', 'b3def1ce-4cf4-477c-aab3-21cb04e6a379', 'multi-chart-477c-aab3-2b04e6a383','test1');

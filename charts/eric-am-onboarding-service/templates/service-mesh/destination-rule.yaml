@@ -1,0 +1,37 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+{{- if eq (include "eric-am-onboarding-service.service-mesh-enabled" .) "true" }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ template "eric-am-onboarding-service.name" . }}-destination-rule
+  labels: {{- include "eric-am-onboarding-service.labels.extended-defaults" . | nindent 4 }}
+  annotations: {{- include "eric-am-onboarding-service.annotations" . | nindent 4 }}
+spec:
+  host: {{ template "eric-am-onboarding-service.name" . }}
+  subsets:
+  - labels:
+      app: {{ template "eric-am-onboarding-service.name" . }}
+    name: {{ template "eric-am-onboarding-service.name" . }}-v1
+    trafficPolicy:
+      outlierDetection:
+        splitExternalLocalOriginErrors: {{ .Values.highAvailability.serviceMesh.trafficPolicy.outlierDetection.splitExternalLocalOriginErrors }}
+        consecutiveLocalOriginFailures: {{ .Values.highAvailability.serviceMesh.trafficPolicy.outlierDetection.consecutiveLocalOriginFailures }}
+        consecutive5xxErrors: {{ .Values.highAvailability.serviceMesh.trafficPolicy.outlierDetection.consecutive5xxErrors }}
+        interval: {{ .Values.highAvailability.serviceMesh.trafficPolicy.outlierDetection.interval }}
+        baseEjectionTime: {{ .Values.highAvailability.serviceMesh.trafficPolicy.outlierDetection.baseEjectionTime }}
+{{- end }}

@@ -1,0 +1,21 @@
+metadata:
+vnf_product_name: sample_name
+vnf_provider_id: sample_id
+vnf_package_version: 1
+vnf_release_date_time: 1996-12-19T16:39:57-08:00
+
+Source: Files/images/docker.tar
+Algorithm: SHA512
+Hash: 4009db5a3a77160208168831c4f74d4f7872375f40a45ccb2a340112ff391482f6dea1c9c4d3affd063df5672d129eed04286a106bc047d3aa550a4164759d87
+
+Source: Files/images.txt
+Algorithm: SHA512
+Hash: 0179507da1c289fedcb14656480238d393aff459ff8c348eb43d5643baf9656e357bb5e5655b7b581ab9a0ea30cb2f019741c4b76d7b1c6305ac244c559d3557
+
+Source: Definitions/OtherTemplates/sampledescriptor-0.0.1-223.tgz
+Algorithm: SHA512
+Hash: 5e44dbadf6f3b1e366baf6701268754aa7a2ec43dfb2f4fcd29abeca787de7ef14e179c14df092a25ae7a4b16adf5a9e45ed118523cf84ef29bfa1187b5a9b58
+
+Source: Definitions/sampledescriptor-0.0.1-223.yaml
+Algorithm: SHA512
+Hash: 170de46572ea5374681385ad7a41abcdd7ee4d97bda147e52811b3bb4de9a8c5557c02133c3ce5f0983a23342b6895db466ff5b30322c4e909433d43fa1de734

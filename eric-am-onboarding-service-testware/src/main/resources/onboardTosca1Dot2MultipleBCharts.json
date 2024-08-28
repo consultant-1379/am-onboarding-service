@@ -1,0 +1,602 @@
+{
+  "onboardApp": {
+    "appName": "eric-sec-certm-crd",
+    "csarDownloadUrl": "/tmp/spider-app-multi-b-1.0.41-v2-imageless.csar",
+    "appImagesCount": 1,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": [
+      "wrong-chart-477c-aab3-2b04e6a382",
+      "multi-chart-477c-aab3-2b04e6a383"
+    ]
+  },
+  "operations": [
+    {
+      "operationName": "instantiate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "default": null,
+          "name": "vnfc2.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf2",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "bro_endpoint_url",
+          "required": false,
+          "type": "string",
+          "description": "This property contains the bro endpoint URI for backup & restore",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.script.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for script to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.script.configMap"
+          }
+        },
+        {
+          "default": "influxdb-service2.rontgen010.seli.gic.ericsson.se",
+          "name": "influxdb.ext.apiAccessHostname",
+          "required": true,
+          "type": "string",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc1.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf1",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "config.nbi.file.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enabled creation of file configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.enabled"
+          }
+        },
+        {
+          "default": null,
+          "name": "values.yaml",
+          "required": false,
+          "type": "string",
+          "description": "This property can contain the contents of a values.yaml file in escaped json format",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "pm tag",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.xml.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for xml to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.xml.configMap"
+          }
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.json.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for json to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.json.configMap"
+          }
+        },
+        {
+          "default": false,
+          "name": "backup-controller.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Deploy's BRO if set to true",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": 1,
+          "name": "eric-adp-gs-testapp.service.replicaCount",
+          "required": false,
+          "type": "integer",
+          "description": "integer value for schema.json validation",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "rontgen010.seli.gic.ericsson.se",
+          "name": "pm-testapp.ingress.domain",
+          "required": true,
+          "type": "string",
+          "description": "pm ingress",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "eric-pm-server.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "bro.test.hahn061.rnd.gic.ericsson.se",
+          "name": "global.hosts.bro",
+          "required": false,
+          "type": "string",
+          "description": "Ingress host address for BRO",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc4.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf4",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc3.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf3",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-pm-server.server.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.tls.dced.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "enable tls for eric-adp-gs-testapp",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "bro.ingress.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enables the ingress to be created for BRO",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc1.test-cnf.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf1",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "network-block",
+          "name": "eric-pm-server.server.persistentVolume.storageClass",
+          "required": false,
+          "type": "string",
+          "description": "db",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "heal",
+      "isSupported": false,
+      "operationErrorMessage": "heal operation is missing in VNF LCM interfaces",
+      "propertyList": []
+    },
+    {
+      "operationName": "scale",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "modify_information",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "rollback",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "default": false,
+          "name": "tags.all",
+          "required": null,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "change_current_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "change_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "default": null,
+          "name": "vnfc2.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf2",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "bro_endpoint_url",
+          "required": false,
+          "type": "string",
+          "description": "This property contains the bro endpoint URI for backup & restore",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc1.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf1",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "pm tag",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.json.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for json to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.json.configMap"
+          }
+        },
+        {
+          "default": "rontgen010.seli.gic.ericsson.se",
+          "name": "pm-testapp.ingress.domain",
+          "required": true,
+          "type": "string",
+          "description": "pm ingress",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc4.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf4",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc3.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf3",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.tls.dced.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "enable tls for eric-adp-gs-testapp",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "bro.ingress.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enables the ingress to be created for BRO",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.script.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for script to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.script.configMap"
+          }
+        },
+        {
+          "default": "influxdb-service2.rontgen010.seli.gic.ericsson.se",
+          "name": "influxdb.ext.apiAccessHostname",
+          "required": true,
+          "type": "string",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "upgrade.downsize.allowed",
+          "required": false,
+          "type": "boolean",
+          "description": "Indicates that the CNF/CNA is upgraded by setting all replicas to zero before upgrading to resources.",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "config.nbi.file.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Enabled creation of file configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.enabled"
+          }
+        },
+        {
+          "default": null,
+          "name": "values.yaml",
+          "required": false,
+          "type": "string",
+          "description": "This property can contain the contents of a values.yaml file in escaped json format",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-adp-gs-testapp.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "config.nbi.file.xml.configMap",
+          "required": false,
+          "type": "file",
+          "description": "File parameter to add data for xml to configmap",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": {
+            "chart_param": "config.nbi.file.xml.configMap"
+          }
+        },
+        {
+          "default": false,
+          "name": "backup-controller.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "Deploy's BRO if set to true",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": 1,
+          "name": "eric-adp-gs-testapp.service.replicaCount",
+          "required": false,
+          "type": "integer",
+          "description": "integer value for schema.json validation",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "isAutoRollbackAllowed",
+          "required": false,
+          "type": "boolean",
+          "description": "This field set to false will disable auto-rollback after failed upgrade",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": true,
+          "name": "eric-pm-server.enabled",
+          "required": false,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "bro.test.hahn061.rnd.gic.ericsson.se",
+          "name": "global.hosts.bro",
+          "required": false,
+          "type": "string",
+          "description": "Ingress host address for BRO",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": false,
+          "name": "eric-pm-server.server.ingress.enabled",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": null,
+          "name": "vnfc1.test-cnf.ingress.host",
+          "required": false,
+          "type": "string",
+          "description": "ingress host for vnf1",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        },
+        {
+          "default": "network-block",
+          "name": "eric-pm-server.server.persistentVolume.storageClass",
+          "required": false,
+          "type": "string",
+          "description": "db",
+          "entry_schema": null,
+          "constraints": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "sync",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "terminate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+INSERT INTO app_packages(package_id,descriptor_id,descriptor_version,provider,product_name,software_version,onboarding_state, usage_state, operational_state, user_defined_data)
+VALUES ('f3def1ce-4cf4-477c-aab3','h3def1ce','cxp9025898_4r81e08','SGSN.1_21_CXS101289_R81E08','Ericsson','1.21 (CXS101289_R81E08)','CREATED', 'NOT_IN_USE', 'ENABLED', '{"overrideRegistryURL":"true"}');
+INSERT INTO app_packages(package_id,descriptor_id,descriptor_version,provider,product_name,software_version,onboarding_state, usage_state, operational_state, user_defined_data)
+VALUES ('f3def1ce-4cf4-471','h3def1','cxp9025898_4r81e08','SGSN.1_21_CXS101289_R81E08','Ericsson','1.21 (CXS101289_R81E08)','CREATED', 'NOT_IN_USE', 'ENABLED', '{"overrideRegistryURL":"true","timeOut":"40"}');
+INSERT INTO app_packages(package_id,descriptor_id,descriptor_version,provider,product_name,software_version,onboarding_state, usage_state, operational_state, user_defined_data)
+VALUES ('f3def1ce-4cf4-472','h3def2','cxp9025898_4r81e08','SGSN.1_21_CXS101289_R81E08','Ericsson','1.21 (CXS101289_R81E08)','CREATED', 'NOT_IN_USE', 'ENABLED', '{"timeOut":"30"}');
+INSERT INTO app_packages(package_id,descriptor_id,descriptor_version,provider,product_name,software_version,onboarding_state, usage_state, operational_state, user_defined_data)
+VALUES ('f3def1ce-4cf4-473','h3def3','cxp9025898_4r81e08','SGSN.1_21_CXS101289_R81E08','Ericsson','1.21 (CXS101289_R81E08)','CREATED', 'NOT_IN_USE', 'ENABLED', '{"overrideRegistryURL":"true","timeOut":"20"}');

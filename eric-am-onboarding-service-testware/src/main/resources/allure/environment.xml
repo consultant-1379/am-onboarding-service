@@ -1,0 +1,29 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ~ COPYRIGHT Ericsson 2024
+ ~
+ ~
+ ~
+ ~ The copyright to the computer program(s) herein is the property of
+ ~
+ ~ Ericsson Inc. The programs may be used and/or copied only with written
+ ~
+ ~ permission from Ericsson Inc. or in accordance with the terms and
+ ~
+ ~ conditions stipulated in the agreement/contract under which the
+ ~
+ ~ program(s) have been supplied.
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<qa:environment xmlns:qa="urn:model.commons.qatools.yandex.ru">
+  <id>2a54c4d7-7d79-4615-b80d-ffc1107016a1</id>
+  <name>Allure Examples Demo Report</name>
+  <parameter>
+    <name>Project Name</name>
+    <key>project.name</key>
+    <value>${project.name}</value>
+  </parameter>
+  <parameter>
+    <name>Project Version</name>
+    <key>project.version</key>
+    <value>${project.version}</value>
+  </parameter>
+</qa:environment>

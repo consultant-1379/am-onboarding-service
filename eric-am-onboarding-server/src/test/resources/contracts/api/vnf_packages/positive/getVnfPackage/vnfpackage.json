@@ -1,0 +1,49 @@
+ {
+    "id": "<APP_PKG_ID>",
+    "vnfdId": "d3def1ce-4cf4-477c-aab3-21cb04e6a378",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "checksum": null,
+    "softwareImages": [
+      {
+        "id": "docker.io/justwatch/elasticsearch_exporter:1.0.2",
+        "name": null,
+        "provider": null,
+        "version": null,
+        "checksum": null,
+        "containerFormat": null,
+        "diskFormat": null,
+        "createdAt": null,
+        "minDisk": null,
+        "minRam": null,
+        "size": null,
+        "userMetadata": null,
+        "imagePath": "docker.io/justwatch/elasticsearch_exporter:1.0.2"
+      }
+    ],
+    "additionalArtifacts": null,
+    "onboardingState": "ONBOARDED",
+    "operationalState": "ENABLED",
+    "usageState": "IN_USE",
+    "packageSecurityOption": "UNSIGNED",
+    "userDefinedData": null,
+    "_links":
+    {
+      "self": {
+        "href": "http://localhost/api/vnfpkgm/v1/vnf_packages/d3def1ce-4cf4-477c-aab3-21cb04e6a380"
+      }
+    },
+   "helmPackageUrls": [
+     {
+       "chartUrl": "http://localhost/api/onboarded/charts/Ericsson.SGSN-MME/1.20",
+       "chartName": "Ericsson.SGSN-MME",
+       "chartVersion": "1.20",
+       "chartType": "CNF",
+       "chartArtifactKey": "helm_package1",
+       "priority": 1
+     }
+   ]
+
+  }

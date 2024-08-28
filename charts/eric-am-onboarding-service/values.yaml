@@ -1,0 +1,276 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+# Default values for am-onboarding-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+nameOverride: "eric-am-onboarding-service"
+
+podDisruptionBudget:
+  minAvailable: 0
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 0
+
+# DR-D1121-011 supported global parameters shall be left as comments (YAML comment) in the values.yaml
+#global:
+#  registry:
+#    url: armdocker.rnd.ericsson.se
+#    imagePullPolicy: IfNotPresent
+## pullSecret:
+#  timezone: UTC
+#  postgresCredentials:
+#    secret: eric-sec-access-mgmt-creds
+#  nodeSelector: {}
+#  labels: {}
+#  annotations: {}
+## internalIPFamily: IPv6 or IPv4
+#  db:
+#    connection:
+#      max-lifetime:
+## DR-D1123-134
+#  securityPolicy:
+#    rolekind: ""
+
+imageCredentials:
+  onboardingService:
+    repoPath: # see default value in eric-product-info.yaml file
+  pgInitContainer:
+    repoPath: # see default value in eric-product-info.yaml file
+
+container:
+  registry:
+    enabled: true
+  ports:
+    http: 8888
+
+caSecret:
+  name: iam-cacert-secret
+
+service:
+  type: ClusterIP
+  port: 80
+
+jvm:
+  memory:
+    heapMin: 512
+    heapMax: 750
+    limitBuffer: 512
+
+# DR-D1126-005
+resources:
+  onboarding:
+    requests:
+      memory: "1280Mi"
+      cpu: "1000m"
+      ephemeral-storage: "260Mi"
+    limits:
+      memory: "2048Mi"
+      cpu: "1500m"
+      ephemeral-storage: "350Mi"
+  onboardingCopyCA:
+    requests:
+      memory: "100Mi"
+      cpu: "200m"
+      ephemeral-storage: "260Mi"
+    limits:
+      memory: "256Mi"
+      cpu: "300m"
+      ephemeral-storage: "350Mi"
+  onboardingDBschema:
+    requests:
+      memory: "100Mi"
+      cpu: "200m"
+      ephemeral-storage: "260Mi"
+    limits:
+      memory: "256Mi"
+      cpu: "300m"
+      ephemeral-storage: "350Mi"
+  onboardingDBtoscao:
+    requests:
+      memory: "100Mi"
+      cpu: "200m"
+      ephemeral-storage: "260Mi"
+    limits:
+      memory: "256Mi"
+      cpu: "300m"
+      ephemeral-storage: "350Mi"
+
+ephemeral:
+  volume:
+    size: 90Gi
+  storageClassName:
+
+helm:
+  registry:
+    repo: "onboarded"
+    secretName: eric-lcm-helm-chart-registry
+
+keystore:
+  location: /onboarding.keystore
+  cert: /etc/docker/certs.d/${docker.registry.address}/ca.crt
+
+database:
+  createDatabases: true
+  keyForSuperPw: pgpasswd
+  keyForUserPw: pgpasswd
+  keyForUserId: pguserid
+  service: application-manager-postgres
+  schema: "onboarding"
+  port: "5432"
+  creationTime: "50"
+  toscao:
+    schema: "toscao"
+
+prometheus:
+  path: "/actuator/prometheus"
+  scrape: "true"
+  scrape-role: "endpoints"
+  scrape-interval: "15s"
+
+userSecret: eric-evnfm-rbac-default-user
+
+onboarding:
+  request:
+    max:
+      size: 40000MB
+  restrictedMode: true
+  skipToscaoValidation: false
+  ignoreCrlInfo: false
+  skipCertificateKeyUsageValidation: false
+  allowUnsignedVNFPackageOnboarding: true
+  skipCertificateValidation: false
+  logConcurrentRequests: false
+  hikari:
+    leakDetectionThreshold: 0
+  upload:
+    concurrency: high
+  pagination:
+    disabledByDefault: true
+
+# DR-D1123-114
+egress:
+  certm:
+    certificates:
+      trustedCertificateListName: onboarding-trusted-certs
+# DR-D1123-137
+      crlEnabled: false
+
+toscao:
+  host: evnfm-toscao
+  port: 7001
+  api:
+    version: v2.7
+
+objectStorage:
+  enabled: false
+  host: eric-data-object-storage-mn
+  port: 9000
+  kubernetesSecretName: eric-data-object-storage-mn-secret
+
+logging:
+  logstash:
+    host: eric-log-transformer
+    port: 5025
+
+nodeSelector: {}
+labels: {}
+annotations: {}
+
+# DR1120-061 Tolerations to influence scheduling decisions made by Kubernetes scheduler
+tolerations:
+  onboarding:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+
+probes:
+  onboarding:
+    livenessProbe:
+      initialDelaySeconds: 200
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 6
+    readinessProbe:
+      initialDelaySeconds: 120
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+
+podPriority:
+  onboarding:
+    priorityClassName: ""
+
+terminationGracePeriodSeconds:
+  onboarding: 45
+
+affinity:
+  podAntiAffinity: "hard"
+  topologyKey: "kubernetes.io/hostname"
+
+highAvailability:
+  serviceMesh:
+    routes:
+      get:
+        retries:
+          maxAttempts: 2
+          perTryTimeout: 5s
+        timeout: 15s
+      postdelete:
+        retries:
+          maxAttempts: 2
+          perTryTimeout: 90s
+        timeout: 180s
+    trafficPolicy:
+      outlierDetection:
+        splitExternalLocalOriginErrors: true
+        consecutiveLocalOriginFailures: 2
+        consecutive5xxErrors: 2
+        interval: 5s
+        baseEjectionTime: 1m
+
+# DR D1123-127
+appArmorProfile:
+  # The setting applies to all container when the container name is omitted.
+  # { choice='unconfined, runtime/default, localhost, "" ' } [ default="" ]
+  type: ""
+
+# DR D1123-128
+seccompProfile:
+  # The setting applies to all container when the container name is omitted.
+  # { choice='unconfined, runtime/default, localhost, "" ' } [ default="" ]
+  type: ""
+
+istio:
+  excludeOutboundPorts: "5432,5025,6379,6380,7001,8888,9000"
+
+# DR-D1123-134
+securityPolicy:
+  rolename: ""
+
+# DR-D1120-090
+topologySpreadConstraints: {}

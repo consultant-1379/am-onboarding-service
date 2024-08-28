@@ -1,0 +1,3 @@
+[submodule "am-integration-charts"]
+	path = am-integration-charts
+	url = ../am-integration-charts

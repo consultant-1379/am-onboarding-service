@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ~ COPYRIGHT Ericsson 2024
+ ~
+ ~
+ ~
+ ~ The copyright to the computer program(s) herein is the property of
+ ~
+ ~ Ericsson Inc. The programs may be used and/or copied only with written
+ ~
+ ~ permission from Ericsson Inc. or in accordance with the terms and
+ ~
+ ~ conditions stipulated in the agreement/contract under which the
+ ~
+ ~ program(s) have been supplied.
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<included>
+    <appender name="tcp-json" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+      <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <version>1.0.0</version>
+        <includeContext>false</includeContext>
+        <includeTags>false</includeTags>
+
+        <!-- Rename fields to follow ADP Schema 1.0.0
+             See: https://gerrit.ericsson.se/plugins/gitiles/bssf/adp-log/api/+/27aab18c62e878a653ea9a4a65f3bea52d993962/api-logging/src/main/json/logEvent.0.json
+        -->
+        <fieldNames>
+          <level>[ignore]</level>
+          <version>version</version>
+          <timestamp>timestamp</timestamp>
+          <thread>thread</thread>
+          <logger>logger</logger>
+          <levelValue>[ignore]</levelValue>
+        </fieldNames>
+
+        <provider class="net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider">
+          <pattern>
+            <omitEmptyFields>true</omitEmptyFields>
+            <pattern>
+              {
+              "service_id": "${SERVICE_ID:-unknown}",
+              "correlation_id": "%mdc{traceId}"
+              }
+            </pattern>
+          </pattern>
+        </provider>
+
+        <provider class="com.ericsson.oss.orchestration.eo.provider.ADPSeverityJsonProvider"/>
+      </encoder>
+    </appender>
+</included>
+

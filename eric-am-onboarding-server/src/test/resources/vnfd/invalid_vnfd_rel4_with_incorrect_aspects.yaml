@@ -1,0 +1,1126 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: VNF Descriptor for Ericsson SGSN-MME
+
+imports:
+  - etsi_nfv_sol001_vnfd_4_2_1_types.yaml
+  - etsi_nfv_sol001_vnfd_deployable_modules_support.yaml
+
+data_types:
+  file:
+    derived_from: string
+  ericsson.datatypes.nfv.VnfInfoModifiableAttributes:
+    derived_from: tosca.datatypes.nfv.VnfInfoModifiableAttributes
+    properties:
+      extensions:
+        type: ericsson.datatypes.nfv.VnfInfoModifiableAttributesExtensions
+  ericsson.datatypes.nfv.VnfInfoModifiableAttributesExtensions:
+    derived_from: tosca.datatypes.nfv.VnfInfoModifiableAttributesExtensions
+    properties:
+      vnfControlledScaling:
+        type: map
+        description: Represents for each aspect the controlled scaling method, either
+          Manual or CISM
+        required: false
+        entry_schema:
+          type: string
+          constraints:
+            - valid_values:
+                - ManualControlled
+                - CISMControlled
+        default:
+          Aspect1: ManualControlled
+          Aspect2: ManualControlled
+          Aspect3: ManualControlled
+          Aspect5: CISMControlled
+      deployableModules:
+        type: map
+        description: Represents optional deployable_module section for enabling and disabling charts
+        required: false
+        entry_schema:
+          type: string
+          constraints:
+            - valid_values:
+                - enabled
+                - disabled
+        default:
+          depModule_crd1: disabled
+          depModule_crd2: disabled
+          depModule_crd3: disabled
+          depModule_cnf1: enabled
+          depModule_cnf2: enabled
+          depModule_cnf1_2: disabled
+          depModule_crd1_2_3: disabled
+          depModule_crd1_cnf1: disabled
+          depModule_crd2_crd3_cnf2: disabled
+
+  ericsson.datatypes.nfv.InstantiateVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      vnfc1.ingress.host:
+        type: string
+        description: ingress host for vnf1
+        required: true
+      vnfc1.test-cnf.ingress.host:
+        type: string
+        description: ingress host for vnf1
+        required: true
+      vnfc2.ingress.host:
+        type: string
+        description: ingress host for vnf2
+        required: true
+      vnfc3.ingress.host:
+        type: string
+        description: ingress host for vnf3
+        required: true
+      vnfc4.ingress.host:
+        type: string
+        description: ingress host for vnf4
+        required: true
+      vnfc5.ingress.host:
+        type: string
+        description: ingress host for vnf5
+        required: true
+      tags.all:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      tags.pm:
+        type: boolean
+        description: pm tag
+        required: true
+        default: true
+      eric-adp-gs-testapp.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      eric-pm-server.server.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      influxdb.ext.apiAccessHostname:
+        type: string
+        description: tags
+        required: true
+        default: influxdb-service2.rontgen010.seli.gic.ericsson.se
+      pm-testapp.ingress.domain:
+        type: string
+        description: pm ingress
+        required: true
+        default: rontgen010.seli.gic.ericsson.se
+      eric-pm-server.server.persistentVolume.storageClass:
+        type: string
+        description: db
+        required: false
+        default: network-block
+      eric-adp-gs-testapp.tls.dced.enabled:
+        type: boolean
+        description: enable tls for eric-adp-gs-testapp
+        required: true
+        default: false
+      config.nbi.file.enabled:
+        type: boolean
+        description: Enabled creation of file configmap
+        required: false
+        default: false
+        metadata:
+          chart_param: config.nbi.file.enabled
+      config.nbi.file.json.configMap:
+        type: file
+        description: File parameter to add data for json to configmap
+        required: false
+        metadata:
+          chart_param: config.nbi.file.json.configMap
+      config.nbi.file.xml.configMap:
+        type: file
+        description: File parameter to add data for xml to configmap
+        required: false
+        metadata:
+          chart_param: config.nbi.file.xml.configMap
+      config.nbi.file.script.configMap:
+        type: file
+        description: File parameter to add data for script to configmap
+        required: false
+        metadata:
+          chart_param: config.nbi.file.script.configMap
+      values.yaml:
+        type: string
+        required: false
+        description: This property can contain the contents of a values.yaml file in escaped json format
+      bro_endpoint_url:
+        type: string
+        required: false
+        description: This property contains the bro endpoint URI for backup & restore
+        default: http://eric-ctrl-bro.YOUR-NAMESPACE:7001
+      global.hosts.bro:
+        type: string
+        required: false
+        default: bro.test.hahn061.rnd.gic.ericsson.se
+        description: Ingress host address for BRO
+      bro.ingress.enabled:
+        type: boolean
+        required: false
+        default: false
+        description: Enables the ingress to be created for BRO
+      backup-controller.enabled:
+        type: boolean
+        required: false
+        default: false
+        description: Deploy's BRO if set to true
+      retrieveUnsealKey:
+        type: boolean
+        description: Retrieve unseal key
+        required: false
+        default: false
+      day0.configuration.secretname:
+        type: string
+        description: The name of the secret
+        required: false
+        default: restore-external-storage-secret
+      day0.configuration.param1.key:
+        type: string
+        description: Key for URI of external storage(SFTP) for backup import
+        required: false
+        default: restore.externalStorageURI
+      day0.configuration.param1.value:
+        type: string
+        description: Value for URI of external storage(SFTP) for backup import
+        required: false
+        default: external-storage-url
+      day0.configuration.param2.key:
+        type: string
+        description: Key for external storage (SFTP)password
+        required: false
+        default: restore.externalStorageCredentials
+      day0.configuration.param2.value:
+        type: string
+        description: Value for external storage (SFTP)password
+        required: false
+        default: external-storage-credentials
+      day0.configuration.secrets:
+        type: map
+        description: map of secrets to be created during instantiation
+        required: false
+        entry_schema:
+          type: map
+      helm_client_version:
+        type: string
+        description: Helm version to be utilized for LCM operations
+        required: true
+        default: latest
+  ericsson.datatypes.nfv.ChangePackageVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      vnfc1.ingress.host:
+        type: string
+        description: ingress host for vnf1
+        required: true
+      vnfc1.test-cnf.ingress.host:
+        type: string
+        description: ingress host for vnf1
+        required: true
+      vnfc2.ingress.host:
+        type: string
+        description: ingress host for vnf2
+        required: true
+      vnfc3.ingress.host:
+        type: string
+        description: ingress host for vnf3
+        required: true
+      vnfc4.ingress.host:
+        type: string
+        description: ingress host for vnf4
+        required: true
+      vnfc5.ingress.host:
+        type: string
+        description: ingress host for vnf5
+        required: true
+      tags.all:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      tags.pm:
+        type: boolean
+        description: pm tag
+        required: true
+        default: true
+      eric-adp-gs-testapp.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      eric-pm-server.server.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      influxdb.ext.apiAccessHostname:
+        type: string
+        description: tags
+        required: true
+        default: influxdb-service2.rontgen010.seli.gic.ericsson.se
+      pm-testapp.ingress.domain:
+        type: string
+        description: pm ingress
+        required: true
+        default: rontgen010.seli.gic.ericsson.se
+      eric-pm-server.server.persistentVolume.storageClass:
+        type: string
+        description: db
+        required: false
+        default: network-block
+      eric-adp-gs-testapp.tls.dced.enabled:
+        type: boolean
+        description: enable tls for eric-adp-gs-testapp
+        required: true
+        default: false
+      config.nbi.file.enabled:
+        type: boolean
+        description: Enabled creation of file configmap
+        required: false
+        default: false
+        metadata:
+          chart_param: config.nbi.file.enabled
+      config.nbi.file.json.configMap:
+        type: file
+        description: File parameter to add data for json to configmap
+        required: false
+        metadata:
+          chart_param: config.nbi.file.json.configMap
+      config.nbi.file.xml.configMap:
+        type: file
+        description: File parameter to add data for xml to configmap
+        required: false
+        metadata:
+          chart_param: config.nbi.file.xml.configMap
+      config.nbi.file.script.configMap:
+        type: file
+        description: File parameter to add data for script to configmap
+        required: false
+        metadata:
+          chart_param: config.nbi.file.script.configMap
+      values.yaml:
+        type: string
+        required: false
+        description: This property can contain the contents of a values.yaml file in escaped json format
+      bro_endpoint_url:
+        type: string
+        required: false
+        description: This property contains the bro endpoint URI for backup & restore
+      global.hosts.bro:
+        type: string
+        required: false
+        default: bro.test.hahn061.rnd.gic.ericsson.se
+        description: Ingress host address for BRO
+      bro.ingress.enabled:
+        type: boolean
+        required: false
+        default: false
+        description: Enables the ingress to be created for BRO
+      backup-controller.enabled:
+        type: boolean
+        required: false
+        default: false
+        description: Deploy's BRO if set to true
+      isAutoRollbackAllowed:
+        type: boolean
+        description: This field set to false will disable auto-rollback after failed upgrade
+        required: false
+      upgrade_failed_parameters:
+        type: map
+        entry_schema:
+          type: string
+        description: parameters to be used during rollback
+        required: false
+  ericsson.datatypes.nfv.HealVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      restore.scope:
+        type: string
+        description: Scope of backup
+        required: true
+        default: DEFAULT
+      restore.backupName:
+        type: string
+        description: Name of backup needs restore
+        required: true
+      day0.configuration.secretname:
+        type: string
+        description: The name of the secret
+        required: false
+        default: restore-external-storage-secret
+      day0.configuration.param1.key:
+        type: string
+        description: Key for URI of external storage(SFTP) for backup import
+        required: false
+        default: restore.externalStorageURI
+      day0.configuration.param1.value:
+        type: string
+        description: Value for URI of external storage(SFTP) for backup import
+        required: false
+        default: external-storage-url
+      day0.configuration.param2.key:
+        type: string
+        description: Key for external storage (SFTP)password
+        required: false
+        default: restore.externalStorageCredentials
+      day0.configuration.param2.value:
+        type: string
+        description: Value for external storage (SFTP)password
+        required: false
+        default: external-storage-credentials
+      day0.configuration.secrets:
+        type: map
+        description: map of secrets to be created during heal
+        required: false
+        entry_schema:
+          type: map
+  ericsson.datatypes.nfv.rollbackFromPackage6ToPackage5:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      eric-adp-gs-testapp.ingress.enabled:
+        type: boolean
+        description: tags
+        default: false
+  ericsson.datatypes.nfv.rollbackFromPackage6ToPackage4:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      tags.all:
+        type: boolean
+        description: tags
+        default: false
+
+node_types:
+  Ericsson_SAMPLE-VNF_1_24_CXS101289_R81E08_cxp9025898_4r81e08:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      lcm_operations_configuration:
+        type: tosca.datatypes.nfv.VnfLcmOperationsConfiguration
+        default:
+          heal:
+            causes:
+              - Full Restore
+      descriptor_id:
+        type: string
+        constraints:
+          - valid_values:
+              - multi-chart-etsi-rel4-5fcb086597
+        default: multi-chart-etsi-rel4-5fcb086597
+      descriptor_version:
+        type: string
+        constraints:
+          - valid_values:
+              - 1.0.2
+        default: 1.0.2
+      provider:
+        type: string
+        constraints:
+          - valid_values:
+              - Ericsson
+        default: Ericsson
+      product_name:
+        type: string
+        constraints:
+          - valid_values:
+              - spider-app-multi-a-rel4-dm
+        default: spider-app-multi-a-rel4-dm
+      software_version:
+        type: string
+        constraints:
+          - valid_values:
+              - 1.0.2s
+        default: 1.0.2s
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+          constraints:
+            - valid_values:
+                - 3881:E-VNFM
+        default:
+          - 3881:E-VNFM
+      flavour_id:
+        type: string
+        constraints:
+          - valid_values:
+              - default
+        default: default
+      flavour_description:
+        type: string
+        default: ''
+      modifiable_attributes:
+        type: tosca.datatypes.nfv.VnfInfoModifiableAttributes
+    interfaces:
+      Vnflcm:
+        type: tosca.interfaces.nfv.Vnflcm
+        operations:
+          instantiate:
+            inputs:
+              helm_packages:
+                type: list
+                entry_schema:
+                  type: map
+                required: true
+                description: list of all helm charts
+              additional_parameters:
+                type: ericsson.datatypes.nfv.InstantiateVnfOperationAdditionalParameters
+                required: false
+          terminate: { }
+          scale: { }
+          heal:
+            inputs:
+              additional_parameters:
+                type: ericsson.datatypes.nfv.HealVnfOperationAdditionalParameters
+                required: false
+          change_current_package:
+            inputs:
+              helm_packages:
+                type: list
+                entry_schema:
+                  type: map
+                required: true
+                description: list of all helm charts
+              additional_parameters:
+                type: ericsson.datatypes.nfv.ChangePackageVnfOperationAdditionalParameters
+                required: false
+      EricssonChangeCurrentVnfPackage:
+        type: ericsson.interfaces.nfv.EricssonChangeCurrentVnfPackage
+    artifacts:
+      crd_package1:
+        description: sip-tls-crd-chart package
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/eric-sec-sip-tls-crd-4.2.0+32.tgz
+      helm_package1:
+        description: test-scale package
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/test-scale-chart-4.0.0.tgz
+      crd_package2:
+        description: cert-m crd package
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/eric-sec-certm-crd-3.16.0+48.tgz
+      helm_package2:
+        description: helm package associated with spider-app
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/spider-app-4.0.1.tgz
+      crd_package3:
+        description: instantiate crd package
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/scale-crd-1.0.0.tgz
+      software_images:
+        description: Location of the software images being used in this package
+        type: tosca.artifacts.nfv.SwImage
+        file: Files/images/docker.tar
+        properties:
+          name: Docker
+          version: 1.0.0
+          container_format: docker
+          checksum:
+            algorithm: sha-512
+            hash: C2259250EAE4E9D4CDCA5BC2829D40BB2D48A89870E37D21D9364F41BB0A85081757CAAD988D5C7D6D2DC62AFE30A505DFE7827FAA52BDA2CCF5E34C3CDD8301
+          size: 99 B
+          disk_format: raw
+          min_disk: 100 B
+
+topology_template:
+  inputs:
+    modifiable_attributes:
+      type: ericsson.datatypes.nfv.VnfInfoModifiableAttributes
+  node_templates:
+    SAMPLE-VNF:
+      type: Ericsson_SAMPLE-VNF_1_24_CXS101289_R81E08_cxp9025898_4r81e08
+      properties:
+        modifiable_attributes:
+          get_input: modifiable_attributes
+      interfaces:
+        Vnflcm:
+          instantiate:
+            inputs:
+              helm_packages:
+                - get_artifact:
+                    - SELF
+                    - crd_package1
+                - get_artifact:
+                    - SELF
+                    - helm_package1
+                - get_artifact:
+                    - SELF
+                    - crd_package2
+                - get_artifact:
+                    - SELF
+                    - helm_package2
+                - get_artifact:
+                    - SELF
+                    - crd_package3
+          terminate: { }
+          scale: { }
+          change_current_package:
+            inputs:
+              helm_packages:
+                - get_artifact:
+                    - SELF
+                    - crd_package1
+                - get_artifact:
+                    - SELF
+                    - helm_package1
+                - get_artifact:
+                    - SELF
+                    - crd_package2
+                - get_artifact:
+                    - SELF
+                    - helm_package2
+                - get_artifact:
+                    - SELF
+                    - crd_package3
+        EricssonChangeCurrentVnfPackage:
+          inputs:
+            rollback_pattern:
+              - helm_package1: rollback
+              - helm_package2: delete
+              - helm_package2: delete_pvc
+              - helm_package2: install
+            rollback_at_failure_pattern:
+              - helm_package1: 'helm_package1: upgrade, helm_package1: rollback'
+              - helm_package2: 'crd_package3: rollback, helm_package2: delete_pvc, helm_package1:
+                upgrade, helm_package2: install'
+          operations:
+            rollback_from_package6_to_package5:
+              description: rollback from 6 to 5 package
+              inputs:
+                rollback_pattern:
+                  - helm_package1: delete
+                  - helm_package1: delete_pvc
+                  - helm_package2: rollback
+                  - helm_package1: install
+                rollback_at_failure_pattern:
+                  - helm_package1: 'helm_package1: delete, helm_package1: install'
+                  - helm_package2: 'crd_package3: rollback, helm_package2: delete_pvc[component=server],
+                    helm_package1: upgrade, helm_package2:install'
+                  - crd_package3: 'crd_package3: rollback'
+
+    helm_package1:
+      type: tosca.nodes.nfv.Mciop
+      requirements:
+        - associatedVdu: test-cnf
+        - associatedVdu: test-cnf-vnfc1
+        - associatedVdu: test-cnf-vnfc3
+        - associatedVdu: test-cnf-vnfc4
+        - associatedVdu: test-cnf-vnfc5
+      artifacts:
+        helm_package1:
+          description: Mciop Helm package for test scale chart artifact
+          type: tosca.artifacts.nfv.HelmChart
+          file: Definitions/OtherTemplates/test-scale-chart-4.0.0.tgz
+    helm_package2:
+      type: tosca.nodes.nfv.Mciop
+      requirements:
+        - associatedVdu: test-cnf-vnfc5
+      artifacts:
+        helm_package2:
+          description: Mciop Helm package for spider app artifact
+          type: tosca.artifacts.nfv.HelmChart
+          file: Definitions/OtherTemplates/spider-app-4.0.0.tgz
+
+    eric-pm-bulk-reporter:
+      type: tosca.nodes.nfv.Vdu.OsContainerDeployableUnit
+      properties:
+        name: eric-pm-bulk-reporter
+        description: example
+        vdu_profile:
+          min_number_of_instances: 0
+          max_number_of_instances: 0
+      requirements:
+        - container: bulk_reporter_container
+        - virtual_storage: bulk_reporter_storage
+    test-cnf:
+      type: tosca.nodes.nfv.Vdu.OsContainerDeployableUnit
+      properties:
+        name: test-cnf
+        description: example
+        vdu_profile:
+          min_number_of_instances: 0
+          max_number_of_instances: 0
+      requirements:
+        - container: test_cnf_container
+        - virtual_storage: test_cnf_storage
+    test-cnf-vnfc1:
+      type: tosca.nodes.nfv.Vdu.OsContainerDeployableUnit
+      properties:
+        name: test-cnf-vnfc1
+        description: example
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 10
+      requirements:
+        - container: vnfc1_container
+    test-cnf-vnfc3:
+      type: tosca.nodes.nfv.Vdu.OsContainerDeployableUnit
+      properties:
+        name: test-cnf-vnfc3
+        description: example
+        vdu_profile:
+          min_number_of_instances: 0
+          max_number_of_instances: 0
+      requirements:
+        - container: vnfc3_container
+    test-cnf-vnfc4:
+      type: tosca.nodes.nfv.Vdu.OsContainerDeployableUnit
+      properties:
+        name: test-cnf-vnfc4
+        description: example
+        vdu_profile:
+          min_number_of_instances: 0
+          max_number_of_instances: 0
+      requirements:
+        - container: vnfc4_container
+    test-cnf-vnfc5:
+      type: tosca.nodes.nfv.Vdu.OsContainerDeployableUnit
+      properties:
+        name: test-cnf-vnfc5
+        description: example
+        vdu_profile:
+          min_number_of_instances: 0
+          max_number_of_instances: 0
+      requirements:
+        - container: vnfc5_container
+    bulk_reporter_container:
+      type: tosca.nodes.nfv.Vdu.OsContainer
+      properties:
+        name: Bulk Reporter_Container
+        description: Bulk Reporter Container
+        requested_cpu_resources: 1000 # In Milli-Cpus, ie 1 CPU
+        cpu_resource_limit: 2500 # In Milli-Cpus, ie 2.5 CPU
+        requested_memory_resources: 100 MiB
+        memory_resource_limit: 128 MiB
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: Files/images/docker.tar
+          properties:
+            name: Docker
+            version: 1.0.0
+            container_format: docker
+            checksum:
+              algorithm: sha-512
+              hash: C2259250EAE4E9D4CDCA5BC2829D40BB2D48A89870E37D21D9364F41BB0A85081757CAAD988D5C7D6D2DC62AFE30A505DFE7827FAA52BDA2CCF5E34C3CDD8301
+            size: 99 B
+            disk_format: raw
+            min_disk: 100 B
+    test_cnf_container:
+      type: tosca.nodes.nfv.Vdu.OsContainer
+      properties:
+        name: Test Cnf Container
+        description: Test Cnf Container
+        requested_cpu_resources: 1000 # In Milli-Cpus, ie 1 CPU
+        cpu_resource_limit: 2500 # In Milli-Cpus, ie 2.5 CPU
+        requested_memory_resources: 100 MiB
+        memory_resource_limit: 128 MiB
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: Files/images/docker.tar
+          properties:
+            name: Docker
+            version: 1.0.0
+            container_format: docker
+            checksum:
+              algorithm: sha-512
+              hash: C2259250EAE4E9D4CDCA5BC2829D40BB2D48A89870E37D21D9364F41BB0A85081757CAAD988D5C7D6D2DC62AFE30A505DFE7827FAA52BDA2CCF5E34C3CDD8301
+            size: 99 B
+            disk_format: raw
+            min_disk: 100 B
+    vnfc1_container:
+      type: tosca.nodes.nfv.Vdu.OsContainer
+      properties:
+        name: vnfc1 Container
+        description: vnfc1 Container
+        requested_cpu_resources: 1000 # In Milli-Cpus, ie 1 CPU
+        cpu_resource_limit: 2500 # In Milli-Cpus, ie 2.5 CPU
+        requested_memory_resources: 1 GiB
+        memory_resource_limit: 10 GiB
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: Files/images/docker.tar
+          properties:
+            name: Docker
+            version: 1.0.0
+            container_format: docker
+            checksum:
+              algorithm: sha-512
+              hash: C2259250EAE4E9D4CDCA5BC2829D40BB2D48A89870E37D21D9364F41BB0A85081757CAAD988D5C7D6D2DC62AFE30A505DFE7827FAA52BDA2CCF5E34C3CDD8302
+            size: 99 B
+            disk_format: raw
+            min_disk: 100 B
+    vnfc3_container:
+      type: tosca.nodes.nfv.Vdu.OsContainer
+      properties:
+        name: vnfc3 Container
+        description: vnfc3 Container
+        requested_cpu_resources: 1000 # In Milli-Cpus, ie 1 CPU
+        cpu_resource_limit: 2500 # In Milli-Cpus, ie 2.5 CPU
+        requested_memory_resources: 1 GiB
+        memory_resource_limit: 10 GiB
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: Files/images/docker.tar
+          properties:
+            name: Docker
+            version: 1.0.0
+            container_format: docker
+            checksum:
+              algorithm: sha-512
+              hash: C2259250EAE4E9D4CDCA5BC2829D40BB2D48A89870E37D21D9364F41BB0A85081757CAAD988D5C7D6D2DC62AFE30A505DFE7827FAA52BDA2CCF5E34C3CDD8302
+            size: 99 B
+            disk_format: raw
+            min_disk: 100 B
+    vnfc4_container:
+      type: tosca.nodes.nfv.Vdu.OsContainer
+      properties:
+        name: vnfc4 Container
+        description: vnfc4 Container
+        requested_cpu_resources: 1000 # In Milli-Cpus, ie 1 CPU
+        cpu_resource_limit: 2500 # In Milli-Cpus, ie 2.5 CPU
+        requested_memory_resources: 1 GiB
+        memory_resource_limit: 10 GiB
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: Files/images/docker.tar
+          properties:
+            name: Docker
+            version: 1.0.0
+            container_format: docker
+            checksum:
+              algorithm: sha-512
+              hash: C2259250EAE4E9D4CDCA5BC2829D40BB2D48A89870E37D21D9364F41BB0A85081757CAAD988D5C7D6D2DC62AFE30A505DFE7827FAA52BDA2CCF5E34C3CDD8302
+            size: 99 B
+            disk_format: raw
+            min_disk: 100 B
+    vnfc5_container:
+      type: tosca.nodes.nfv.Vdu.OsContainer
+      properties:
+        name: vnfc2 Container
+        description: vnfc2 Container
+        requested_cpu_resources: 1000 # In Milli-Cpus, ie 1 CPU
+        cpu_resource_limit: 2500 # In Milli-Cpus, ie 2.5 CPU
+        requested_memory_resources: 1 GiB
+        memory_resource_limit: 10 GiB
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: Files/images/docker.tar
+          properties:
+            name: Docker
+            version: 1.0.0
+            container_format: docker
+            checksum:
+              algorithm: sha-512
+              hash: C2259250EAE4E9D4CDCA5BC2829D40BB2D48A89870E37D21D9364F41BB0A85081757CAAD988D5C7D6D2DC62AFE30A505DFE7827FAA52BDA2CCF5E34C3CDD8302
+            size: 99 B
+            disk_format: raw
+            min_disk: 100 B
+    bulk_reporter_storage:
+      type: tosca.nodes.nfv.Vdu.VirtualBlockStorage
+      properties:
+        virtual_block_storage_data:
+          size_of_storage: 1 GiB
+          rdma_enabled: false
+        per_vnfc_instance: true
+    test_cnf_storage:
+      type: tosca.nodes.nfv.Vdu.VirtualBlockStorage
+      properties:
+        virtual_block_storage_data:
+          size_of_storage: 2 GiB
+          rdma_enabled: false
+        per_vnfc_instance: true
+
+    depModule_cnf1:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: depModule_helmPackage1
+        description: description of depModule_helmPackage1
+        associatedArtifacts:
+          - helm_package1
+
+    depModule_cnf2:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: depModule_helmPackage2
+        description: description of depModule_helmPackage2
+        associatedArtifacts:
+          - helm_package2
+
+    depModule_crd3:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: deployable module crd 3
+        description: description of Crd 3
+        associatedArtifacts:
+          - crd_package3
+
+    depModule_crd2:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: deployable module crd 2
+        description: description of Crd2
+        associatedArtifacts:
+          - crd_package2
+
+    depModule_crd1:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: deployable module crd 1
+        description: description of Crd1
+        associatedArtifacts:
+          - crd_package1
+
+    depModule_cnf1_2:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: deployable module cnf1&2
+        description: description of Cnf1 & Cnf2
+        associatedArtifacts:
+          - helm_package1
+          - helm_package2
+
+    depModule_crd1_2_3:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: deployable module crd1&2&3
+        description: description of Crd1 & Crd2 & Crd3
+        associatedArtifacts:
+          - crd_package1
+          - crd_package2
+          - crd_package3
+
+    depModule_crd1_cnf1:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: deployable module crd1&cnf1
+        description: description of Crd1 & Crd2 & Crd3
+        associatedArtifacts:
+          - crd_package1
+          - helm_package1
+
+    depModule_crd2_crd3_cnf2:
+      type: tosca.nodes.nfv.DeployableModule
+      properties:
+        name: deployable module crd2&3&cnf2
+        description: description of Crd1 & Crd2 & Crd3
+        associatedArtifacts:
+          - crd_package2
+          - crd_package3
+          - helm_package2
+
+  policies:
+    - InstantiationLevels:
+        type: tosca.policies.nfv.InstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              description: eric-pm-bulk-reporter
+              scale_info:
+                Aspect1:
+                  scale_level: 1
+            instantiation_level_2:
+              description: test-cnf-vnfc3
+              scale_info:
+                Aspect5:
+                  scale_level: 1
+          default_level: instantiation_level_1
+    - vdu_1_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 1
+        targets:
+          - eric-pm-bulk-reporter
+    - vdu_2_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_2:
+              number_of_instances: 1
+        targets:
+          - test-cnf-vnfc3
+    - ScalingAspects1:
+        type: tosca.policies.nfv.ScalingAspects
+        properties:
+          aspects:
+            Aspect1:
+              name: Aspect1
+              description: 'Scale level 0-10 maps to 1-11 for eric-pm-bulk-reporter instances.'
+              max_scale_level: 10
+              step_deltas:
+                - delta_1
+            Aspect2:
+              name: Aspect2
+              description: 'Scale level 0-7 maps to 5-27 for test-cnf-vnfc3 and test-cnf-vnfc4 VNFC instances
+                (4 instance in first scale level,
+                1 instance in second scale level, 9 instance in third scale level and
+                3 instance in all the next scale levels)'
+              max_scale_level: 7
+              step_deltas:
+                - delta_1
+                - delta_2
+                - delta_3
+                - delta_4
+            Aspect3:
+              name: Aspect3
+              description: 'Scale level 0-12 maps to 3-27 for test-cnf and test-cnf-vnfc1 VNFC instances (2 instance
+                per scale step)'
+              max_scale_level: 12
+              step_deltas:
+                - delta_1
+            Aspect5:
+              name: Aspect5
+              description: 'Scale level 0-12 maps to 3-27 for test-cnf-vnfc5 VNFC instances (2 instance
+                per scale step)'
+              max_scale_level: 10
+              step_deltas:
+                - delta_1
+    - vnfc1.test-cnf:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - test-cnf
+    - vnfc1:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - test-cnf-vnfc1
+    - vnfc3:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - test-cnf-vnfc3
+    - vnfc4:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - test-cnf-vnfc4
+    - vnfc5:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - test-cnf-vnfc5
+    - eric-pm-bulk-reporter:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets:
+          - eric-pm-bulk-reporter
+    - Payload_ScalingAspectDeltas1:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect1
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - eric-pm-bulk-reporter
+    - Payload_ScalingAspectDeltas2:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect2
+          deltas:
+            delta_1:
+              number_of_instances: 4
+            delta_2:
+              number_of_instances: 1
+            delta_3:
+              number_of_instances: 9
+            delta_4:
+              number_of_instances: 3
+        targets:
+          - test-cnf-vnfc4
+          - test-cnf-vnfc3
+    - Payload_ScalingAspectDeltas3:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect3
+          deltas:
+            delta_1:
+              number_of_instances: 2
+        targets:
+          - test-cnf
+          - test-cnf-vnfc1
+    - Payload_ScalingAspectDeltas5:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect5
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets:
+          - test-cnf
+          - test-cnf-vnfc5
+    - rollback_from_package6_to_package5:
+        type: tosca.policies.nfv.VnfPackageChange
+        properties:
+          selector:
+            - source_descriptor_id: multi-chart-etsi-rel4-5fcb086597 # a
+              destination_descriptor_id: multi-chart-etsi-rel4-b-455379754e37 # b
+              source_flavour_id: default
+          modification_qualifier: down
+          additional_modification_description: ..
+          destination_flavour_id: default
+        triggers:
+          rollback_from_package6_to_package5:
+            action:
+              - call_operation: EricssonChangeCurrentVnfPackage.rollback_from_package6_to_package5
+            event: tosca.interfaces.nfv.Vnflcm.change_current_package_notification
+
+interface_types:
+  ericsson.interfaces.nfv.EricssonChangeCurrentVnfPackage:
+    derived_from: tosca.interfaces.nfv.ChangeCurrentVnfPackage
+    inputs:
+      rollback_pattern:
+        type: list
+        entry_schema:
+          type: map
+        description: pattern to apply when for downgrade
+      rollback_at_failure_pattern:
+        type: list
+        description: tags
+        entry_schema:
+          type: map
+    operations:
+      rollback_from_package6_to_package5:
+        description: operation for change from version 6 to 5
+        inputs:
+          additional_parameters:
+            type: ericsson.datatypes.nfv.rollbackFromPackage6ToPackage5
+            required: false

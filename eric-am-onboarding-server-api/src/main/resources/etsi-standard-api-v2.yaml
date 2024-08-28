@@ -1,0 +1,773 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+openapi: 3.0.3
+info:
+  version: '1.0.0'
+  title: EVNFM VNF Package Management Interface /v2
+  description: >
+    SOL005 - VNF Package Management Interface 
+    Note: This file might not be aligned to the current version of the ETSI Group Specification it refers to.
+    It contains EVNFM specific interfaces, cherry picked features from a number of ETSI SOL003 versions as
+    well as extensions to the ETSI Group Specification.
+externalDocs:
+  description: ETSI GS NFV-SOL 005 V3.3.1
+  url: >-
+    https://www.etsi.org/deliver/etsi_gs/NFV-SOL/001_099/003/03.03.01_60/gs_NFV-SOL003v030301p.pdf
+
+servers:
+  - url: '{protocol}://{hostname}/{basePath}'
+    variables:
+      protocol:
+        default: https
+      hostname:
+        default: ${INGRESS_HOST_ADDRESS}/vnfm/onboarding
+      basePath:
+        default: api/vnfpkgm/v2
+
+tags:
+  - name: VNF Packages V2
+    description: Groups all the VNF Package Management Operations
+
+paths:
+  '/vnf_packages':
+    get:
+      tags:
+        - VNF Packages V2
+      summary: Query VNF packages information.
+      description: >
+        The GET method queries the information of the VNF packages matching the filter.
+      parameters:
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Attribute-based filtering parameters.
+        - name: all_fields
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Include all complex attributes in the response.
+        - name: fields
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Complex attributes to be included into the response.
+        - name: exclude_fields
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Complex attributes to be excluded from the response.
+        - name: exclude_default
+          description: >
+            Indicates to exclude the following complex attributes from the
+            response. The following attributes shall be excluded from the
+            VnfPkgInfo structure in the response body if this parameter is
+            provided, or none of the parameters "all_fields," "fields",
+            "exclude_fields", "exclude_default" are provided:
+            - softwareImages
+            - additionalArtifacts
+            - userDefinedData
+            - checksum
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: nextpage_opaque_marker
+          description: |
+            Marker to obtain the next page of a paged response.
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: Accept
+          description: >
+            Content-Types that are acceptable for the response. Note: This value must be application/json.
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: size
+          description: |
+            The number of items per page. The default value is 15. Should be a positive number no greater than 100.
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: |
+            OK – Information of the selected VNF packages.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+            Link:
+              description: >
+                Reference to other resources. Used for paging in the present
+                document.
+              schema:
+                type: string
+                maximum: 1
+                minimum: 0
+            PaginationInfo:
+              description: >
+                Page information of result set, includes
+                  number - the returned page number
+                  size - the number of results returned in the page
+                  totalPages - the total number of pages for the query
+                  totalElements - the total number of elements for the query
+              schema:
+                type: string
+                maximum: 1
+                minimum: 0
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VnfPkgInfoV2'
+  '/vnf_packages/{vnfPkgId}':
+    parameters:
+      - name: vnfPkgId
+        description: >
+          Identifier of the VNF package.
+        in: path
+        schema:
+          type: string
+        required: true
+    get:
+      tags:
+        - VNF Packages V2
+      summary: Read information about an individual VNF package.
+      description: |
+        The GET method reads the information of a VNF package.
+      parameters:
+        - name: Accept
+          description: >
+            Content-Types that are acceptable for the response.
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: |
+            OK – Information of the VNF package. Note: If the queried VNF package contains error details, the response schema will be of type 
+            ProblemDetails and will contain information about the error. The response code remains at 200.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VnfPkgInfoV2'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '416':
+          $ref: '#/components/responses/RequestedRangeNotSatisfiable'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+components:
+  schemas:
+    VnfPkgInfoV2:
+      type: object
+      properties:
+        id:
+          description: |
+            An identifier with the intention of being globally unique. This identifier is allocated by the NFVO.
+          type: string
+        vnfdId:
+          description: |
+            This identifier, which is managed by the VNF provider, identifies the VNF package and the VNFD in a globally unique way.
+            It is copied from the VNFD of the onboarded VNF package.
+            It is present after the VNF package content has been onboarded and absent otherwise.
+          type: string
+        vnfProvider:
+          description: |
+            Provider of the VNF package and the VNFD.
+            This information is copied from the VNFD.
+            It is present after the VNF package content has been onboarded and absent otherwise.
+          type: string
+        vnfProductName:
+          description: |
+            Name to identify the VNF product.
+            Invariant for the VNF product lifetime.
+            This information is copied from the VNFD.
+            It shall be present after the VNF package content has been on-boarded and absent otherwise.
+          type: string
+        vnfSoftwareVersion:
+          description: |
+            Software version of the VNF.
+            This is changed when there is any change to the software included in the VNF package.
+            This information is copied from the VNFD.
+            It is present after the VNF package content has been onboarded and absent otherwise.
+          type: string
+        vnfdVersion:
+          description: |
+            The version of the VNFD.
+            This information is copied from the VNFD.
+            It is present after the VNF package content has been onboarded and absent otherwise.
+          type: string
+        checksum:
+          $ref: '#/components/schemas/VnfPkgInfoV2Checksum'
+        softwareImages:
+          description: |
+            Information about VNF package artifacts that are software images.
+            This attribute shall not be present before the VNF package content is on-boarded.
+            Otherwise, this attribute shall be present unless it has been requested to be excluded per
+            attribute selector.
+          type: array
+          items:
+            description: >
+              This type represents an artifact contained in a VNF package
+              which represents a software image.
+            required:
+              - id
+              - name
+              - provider
+              - version
+              - checksum
+              - containerFormat
+              - diskFormat
+              - createdAt
+              - minDisk
+              - minRam
+              - size
+              - imagePath
+            type: object
+            title: VnfPackageSoftwareImageInfo
+            properties:
+              id:
+                description: |
+                  Identifier of the VNF Virtual Link Descriptor (VLD) in the VNFD
+                type: string
+              name:
+                description: |
+                  Name of the software image.
+                type: string
+              provider:
+                description: |
+                  Provider of the software image.
+                type: string
+              version:
+                description: |
+                  VersionRepresentation: string of variable length.
+                type: string
+              checksum:
+                $ref: '#/components/schemas/VnfPkgInfoV2Checksum'
+              containerFormat:
+                description: |
+                  Container format indicates whether the software image is
+                  in a file format that also contains meta-data about the
+                  actual software.
+                  
+                  **Permitted values:**
+                  
+                  * AKI: a kernel image format
+                  * AMI: a machine image format
+                  * ARI: a ram disk image format
+                  * BARE: the image does not have a container or meta-data envelope
+                  * DOCKER: docker container format
+                  * OVA: OVF package in a tar file
+                  * OVF: OVF container format
+                type: string
+                enum:
+                  - AKI
+                  - AMI
+                  - ARI
+                  - BARE
+                  - DOCKER
+                  - OVA
+                  - OVF
+              diskFormat:
+                description: |
+                  Disk format of a software image is the format of the
+                  underlying disk image.
+                  
+                  **Permitted values:**
+                  
+                  * AKI: a kernel image format
+                  * AMI: a machine image format
+                  * ARI: a ramdisk image format
+                  * ISO: an archive format for the data contents of an optical disc, such as CD-ROM
+                  * QCOW2: a common disk image format, which can expand dynamically and supports copy on write
+                  * RAW: an unstructured disk image format
+                  * VDI: a common disk image format
+                  * VHD: a common disk image format
+                  * VHDX: enhanced version of VHD format
+                  * VMDK: a common disk image format
+                type: string
+                enum:
+                  - AKI
+                  - AMI
+                  - ARI
+                  - ISO
+                  - QCOW2
+                  - RAW
+                  - VDI
+                  - VHD
+                  - VHDX
+                  - VMDK
+              createdAt:
+                description: >
+                  Date-time stamp Format: date-time
+                type: string
+                format: date-time
+              minDisk:
+                description: |
+                  The minimal disk for this software image in bytes.
+                type: integer
+                minimum: 0
+              minRam:
+                description: |
+                  The minimal RAM for this software image in bytes.
+                type: integer
+                minimum: 0
+              size:
+                description: |
+                  Size of this software image in bytes.
+                type: integer
+                minimum: 0
+              userMetadata:
+                description: >
+                  This type represents a list of key-value pairs. The
+                  order of the pairs in the list is not significant. In
+                  JSON, a set of key- value pairs is represented as an
+                  object.
+                type: object
+              imagePath:
+                description: >
+                  Path in the VNF package, which identifies the image
+                  artifact and also allows to access a copy of the image
+                  artifact.
+                type: string
+        additionalArtifacts:
+          description: |
+            Information about VNF package artifacts contained in the VNF
+            package that are not software images.
+            This attribute shall not be present before the VNF package content is on-boarded.
+            Otherwise, this attribute shall be present if the VNF package contains additional artifacts.
+          type: array
+          items:
+            description: >
+              This type represents an artifact other than a software image
+              which is contained in a VNF package.
+            required:
+              - artifactPath
+              - checksum
+            type: object
+            title: VnfPackageArtifactInfo
+            properties:
+              artifactPath:
+                description: |
+                  Path in the VNF package, which identifies the artifact and also allows to access a copy of the artifact.
+                type: string
+              checksum:
+                $ref: '#/components/schemas/VnfPkgInfoV2Checksum'
+              metadata:
+                description: >
+                  This type represents a list of key-value pairs. The
+                  order of the pairs in the list is not significant. In
+                  JSON, a set of key- value pairs is represented as an
+                  object.
+                type: object
+        onboardingState:
+          description: |
+            The enumeration PackageOnboardingStateType
+            
+            **Permitted values:**
+            
+            * CREATED: The VNF package resource has been created
+            * UPLOADING: The associated VNF package content is being uploaded.
+            * PROCESSING: The associated VNF package content is being processed, e.g. validation.
+            * ONBOARDED: The associated VNF package content is successfully on-boarded.
+            * ERROR: There was an error during upload of the VNF package content or during VNF package processing.
+          type: string
+          enum:
+            - CREATED
+            - UPLOADING
+            - PROCESSING
+            - ONBOARDED
+            - ERROR
+        operationalState:
+          type: string
+          description: |
+            The enumeration PackageOperationalStateType
+            
+            **Permitted values:**
+            
+            * ENABLED - The VNF package is enabled, i.e. it can be used for instantiation of new VNF instances.
+            * DISABLED - The VNF package is disabled, i.e. it cannot be used for further VNF instantiation requests
+            (unless and until the VNF package is re-enabled).
+          enum:
+            - ENABLED
+            - DISABLED
+        usageState:
+          type: string
+          description: |
+            The enumeration PackageUsageStateType shall comply with the
+            provisions.
+            
+            **Permitted values:**
+            
+            * IN_USE - VNF instances instantiated from this VNF package exist.
+            * NOT_IN_USE - No existing VNF instance is instantiated from this VNF package.
+          enum:
+            - IN_USE
+            - NOT_IN_USE
+        userDefinedData:
+          description: >
+            This type represents a list of key-value pairs. The order of
+            the pairs in the list is not significant. In JSON, a set of
+            key-value pairs is represented as an object.
+          type: object
+        onboardingFailureDetails:
+          description: >
+            Failure details of current onboarding procedure.
+          $ref: '#/components/schemas/ProblemDetails'
+        _links:
+          $ref: '#/components/schemas/VnfPkgInfoV2Links'
+        helmPackageUrls:
+          description: |
+            A list of Helm charts associated with the VNF package
+          type: array
+          items:
+            type: object
+            title: HelmPackage
+            properties:
+              chartUrl:
+                description: |
+                  The URL to the chart.
+                type: string
+              chartName:
+                description: |
+                  The name of the chart.
+                type: string
+              chartVersion:
+                description: |
+                  The version of the chart.
+                type: string
+              chartType:
+                description: |
+                  The type of the chart.
+                type: string
+                enum:
+                  - CRD
+                  - CNF
+              priority:
+                description: |
+                  The order in which the charts will be installed in order of ascendency.
+                type: integer
+              chartArtifactKey:
+                description: |
+                  The artifact key of the chart.
+                type: string
+        packageSecurityOption:
+          type: string
+          description: |
+            The enumeration PackageSecurityOptionType shall comply with the
+            provisions.
+            
+            **Permitted values:**
+            
+            * OPTION_1 - VNF package was signed with option_1 type.
+            * OPTION_2 - VNF package was signed with option_2 type.
+            * UNSIGNED - VNF package was not signed.
+          enum:
+            - OPTION_1
+            - OPTION_2
+            - UNSIGNED
+      required:
+        - id
+        - onboardingState
+        - operationalState
+        - usageState
+    ProblemDetails:
+      description: >
+        Data structure that carry machine-readable details of errors in a HTTP response
+      type: object
+      required:
+        - status
+        - detail
+      properties:
+        type:
+          description: >
+            A URI reference that identifies the problem type. It is encouraged that the URI provides
+            human-readable documentation for the problem (e.g. using HTML)
+            when de-referenced. When this member is not present, its value
+            is assumed to be "about:blank".
+          type: string
+          format: URI
+        title:
+          description: >
+            A short, human-readable summary of the problem type. It does not change from occurrence to occurrence of the problem, except for 
+            purposes of localization (for example, using proactive content negotiation). If type is given and other than about:blank, this 
+            attribute is also provided.
+          type: string
+        status:
+          description: >
+            The HTTP status code for this occurrence of the problem. The HTTP status code generated by the origin server for this occurrence of 
+            the problem.
+          type: integer
+        detail:
+          description: >
+            A human-readable explanation specific to this occurrence of
+            the problem.
+          type: string
+        instance:
+          description: >
+            A URI reference that identifies the specific occurrence of the
+            problem. It may yield further information if de-referenced.
+          type: string
+          format: URI
+    VnfPkgInfoV2Links:
+      type: object
+      description: |
+        Links to resources related to this resource.
+      required:
+        - self
+        - packageContent
+      properties:
+        self:
+          description: |
+            This type represents a link to a resource.
+          type: object
+          required:
+            - href
+          properties:
+            href:
+              description: >
+                URI of a resource referenced from a notification.
+                Should be an absolute URI (i.e. a URI that contains
+                {apiRoot}), however, may be a relative URI (i.e. a URI
+                where the {apiRoot} part is omitted) if the {apiRoot}
+                information is not available.
+              type: string
+              format: url
+        vnfd:
+          description: |
+            This type represents a link to a resource.
+          type: object
+          required:
+            - href
+          properties:
+            href:
+              description: >
+                URI of a resource referenced from a notification.
+                Should be an absolute URI (i.e. a URI that contains
+                {apiRoot}), however, may be a relative URI (i.e. a URI
+                where the {apiRoot} part is omitted) if the {apiRoot}
+                information is not available.
+              type: string
+              format: url
+        packageContent:
+          description: |
+            This type represents a link to a resource.
+          type: object
+          required:
+            - href
+          properties:
+            href:
+              description: >
+                URI of a resource referenced from a notification.
+                Should be an absolute URI (i.e. a URI that contains
+                {apiRoot}), however, may be a relative URI (i.e. a URI
+                where the {apiRoot} part is omitted) if the {apiRoot}
+                information is not available.
+              type: string
+              format: url
+    VnfPkgInfoV2Checksum:
+      description: >
+        This type represents the checksum of a VNF package or an
+        artifact file.
+      required:
+        - algorithm
+        - hash
+      type: object
+      properties:
+        algorithm:
+          description: >
+            Name of the algorithm used to generate the checksum.
+          type: string
+        hash:
+          description: |
+            The hexadecimal value of the checksum.
+          type: string
+  responses:
+    BadRequest:
+      description: |
+        BAD REQUEST – The API responds with this code in the following cases:
+        The cause has to be properly specified in the ProblemDetails structure that is returned.
+        
+        If the request is malformed or syntactically incorrect (for example, if the request URI contains incorrect query parameters or the payload 
+        body contains a syntactically incorrect data structure).The ProblemDetails structure is provided, and includes in the detail attribute more
+        information about the source of the problem.
+
+        If the response to a GET request which queries a container resource would be so large that the performance of the API producer is adversely
+        affected, and the API producer does not support paging for the affected resource. The ProblemDetails structure is provided, and includes in
+        the detail attribute more information about the source of the problem.
+
+        If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response 
+        code (a catch-all error).The ProblemDetails structure is provided, and includes in the detail attribute more information about 
+        the source of the problem.
+        
+        If the request contains a malformed access token.
+        The details of the error are returned in the WWW Authenticate HTTP header.
+        The ProblemDetails structure may be provided.
+        
+        The use of this HTTP error response code is applicable to the use of the OAuth 2.0 for the authorization of API requests and notifications.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Unauthorized:
+      description: |
+        UNAUTHORIZED – If the request contains no access token even though one is required, or if the request contains an authorization token that is
+        invalid (for example, expired or revoked), the API producer responds with this response.The details of the error are returned 
+        in the WWW-Authenticate HTTP header. The ProblemDetails structure may be provided.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Forbidden:
+      description: |
+        FORBIDDEN – If the API consumer is not allowed to perform a particular request to a particular resource, the API producer responds with this
+        response code. The ProblemDetails structure is provided. It includes in the detail attribute information about the source of the problem, 
+        and may indicate how to solve it.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotFound:
+      description: |
+        NOT FOUND – If the API producer did not find a current representation for the resource addressed by the URI passed 
+        in the request or is not willing to disclose that one exists, it responds with this response code. The ProblemDetails structure may be 
+        provided, including in the detail attribute information about the source of the problem, for example, a wrong resource URI variable.
+        This response code is not appropriate if the resource addressed by the URI is a container resource, which is designed to contain child 
+        resources, but does not contain any child resource at the time the request is received. For a GET request to an existing empty container 
+        resource, a typical response contains a 200 OK response code and a payload body with an empty array.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    MethodNotAllowed:
+      description: |
+        METHOD NOT ALLOWED – If a particular HTTP method is not supported for a particular resource, 
+        the API producer responds with this response code. The ProblemDetails structure may be omitted.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotAcceptable:
+      description: |
+        NOT ACCEPTABLE – If the Accept header does not contain at least one name of a content type that is acceptable to the API producer,
+        the API producer responds with this response code. The ProblemDetails structure may be omitted.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    RequestedRangeNotSatisfiable:
+      description: |
+        REQUESTED RANGE NOT SATISFIABLE – This code is returned if the requested byte range in the Range HTTP
+        header is not present in the requested resource.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    InternalServerError:
+      description: |
+        INTERNAL SERVER ERROR – If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP 
+        response code (a catch-all error), the API producer responds with this response code. The ProblemDetails structure is provided, and 
+        includes in the detail attribute more information about the source of the problem.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    ServiceUnavailable:
+      description: |
+        SERVICE UNAVAILABLE – If the API producer encounters an internal overload situation of itself or of a system it relies on, it responds 
+        with this response code, following the provisions in for the use of the Retry-After HTTP header and for the alternative to refuse the 
+        connection. The ProblemDetails structure may be omitted.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'

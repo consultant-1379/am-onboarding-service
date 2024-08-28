@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ~ COPYRIGHT Ericsson 2024
+ ~
+ ~
+ ~
+ ~ The copyright to the computer program(s) herein is the property of
+ ~
+ ~ Ericsson Inc. The programs may be used and/or copied only with written
+ ~
+ ~ permission from Ericsson Inc. or in accordance with the terms and
+ ~
+ ~ conditions stipulated in the agreement/contract under which the
+ ~
+ ~ program(s) have been supplied.
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE suppressions PUBLIC
+  "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+  "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+  <suppress checks="HideUtilityClassConstructor" files="ApplicationServer.java"/>
+  <suppress checks="HideUtilityClassConstructor" files="TestRunner.java"/>
+  <suppress checks="HideUtilityClassConstructor" files="CertificateHelper.java"/>
+  <suppress checks="HideUtilityClassConstructor" files="CmsReader.java"/>
+  <suppress checks="HideUtilityClassConstructor" files="Constants.java"/>
+  <suppress checks="HideUtilityClassConstructor" files="UrlUtils.java"/>
+  <suppress checks="ParameterNumber" files="VnfPackageControllerImpl.java|PackageServiceImpl.java"/>
+  <suppress checks="ParameterNumber" files="VnfPackageControllerV2Impl.java"/>
+  <suppress checks="TypeName"
+            files="V10_2__MigrateChartRegistryUrlData.java|V12_2__MigrateUserDefinedData.java|V14_1__MigrationToMultipleVnfdSchema.java|V16_1__MigrationToChartNameChartVersion"/>
+  <suppress checks="MemberName|VisibilityModifier" files="Constants.java|HelmChartUtils.java"/>
+  <suppress checks="ParameterNumber" files="DockerServiceImpl.java"/>
+  <suppress checks="MemberName" files="HelmRegistryConfig.java"/>
+  <suppress checks="IllegalThrows" files="IdempotencyAspect.java"/>
+  <suppress checks="LineLength" files=".*\.yaml\.properties"/>
+</suppressions>

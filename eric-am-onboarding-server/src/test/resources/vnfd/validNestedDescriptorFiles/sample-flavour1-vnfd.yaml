@@ -1,0 +1,217 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: VNF Descriptor for Ericsson SGSN-MME
+
+# INFO:
+# - This is a work-in-progress example VNFD for containerized VNFs in small stack scenario.
+# - Based on ETSI GS NFV-SOL 001 V2.5.1
+
+
+imports:
+  - etsi_nfv_sol001_vnfd_2_5_1_types.yaml
+  - node_type_vnfd.yaml
+
+topology_template:
+  substitution_mappings:
+    node_type: Ericsson.SAMPLE-VNF.1_25_CXS101289_R81E08.cxp9025898_4r81e08
+    properties:
+      flavour_id: sample-flavour-1
+  node_templates:
+    SAMPLE-VNF:
+      type: Ericsson.SAMPLE-VNF.1_25_CXS101289_R81E08.cxp9025898_4r81e08
+      properties:
+        flavour_description: flavour will install vnfc1, vnfc2, vnfc3 and vnfc4
+      interfaces:
+        Vnflcm:
+          instantiate:
+            inputs:
+              helm_values:
+                helm_package1.tags.vnfc1: 'true'
+                helm_package1.tags.vnfc2: 'true'
+                helm_package1.tags.vnfc3: 'true'
+                helm_package1.tags.vnfc4: 'true'
+                helm_package2.tags.all: 'false'
+                helm_package2.tags.pm: 'true'
+              helm_packages_priority: [1, 0]
+              helm_packages: [get_artifact: [SELF, helm_package1], get_artifact: [SELF, helm_package2]]
+          terminate: {}
+          scale: {}
+    test-cnf:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: test-cnf
+        description: test-cnf deployment/statefulSet
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 28
+    test-cnf-vnfc1:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: test-cnf-vnfc1
+        description: test-cnf-vnfc1 deployment/statefulSet
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 27
+    test-cnf-vnfc2:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: test-cnf-vnfc2
+        description: test-cnf-vnfc2 deployment/statefulSet
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 27
+    test-cnf-vnfc3:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: test-cnf-vnfc3
+        description: test-cnf-vnfc3 deployment/statefulSet
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 27
+    test-cnf-vnfc4:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: test-cnf-vnfc4
+        description: test-cnf-vnfc4 deployment/statefulSet
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 28
+  policies:
+    - ScalingAspects1:
+        type: tosca.policies.nfv.ScalingAspects
+        properties:
+          aspects:
+            Aspect1:
+              name: Aspect1
+              description: >
+                Scale level 0-10 maps to 1-41 for test-cnf-vnfc3 VNFC instances
+                and also maps to 5-45 for test-cnf-vnfc2 VNFC instances (4 instance
+                per scale step)
+              max_scale_level: 10
+              step_deltas:
+              - delta_1
+            Aspect2:
+              name: Aspect2
+              description: >
+                Scale level 0-7 maps to 6-28 for test-cnf-vnfc4 VNFC instances and
+                maps to 5-27 for test-cnf-vnfc3 VNFC instances (4 instance in first scale level,
+                1 instance in second scale level, 9 instance in third scale level and
+                3 instance in all the next scale levels)
+              max_scale_level: 7
+              step_deltas:
+              - delta_1
+              - delta_2
+              - delta_3
+              - delta_4
+            Aspect3:
+              name: Aspect3
+              description: >
+                Scale level 0-12 maps to 4-28 for test-cnf VNFC instances
+                and also maps to 3-27 for test-cnf-vnfc1 VNFC instances (2 instance
+                per scale step)
+              max_scale_level: 12
+              step_deltas:
+              - delta_1
+            Aspect4:
+              name: Aspect4
+              description: >
+                Scale level 0-6 maps to 4-10 for test-cnf VNFC instances, maps to 3-9 for
+                test-cnf-vnfc1 VNFC instances, maps to 5-11 for test-cnf-vnfc2 VNFC
+                instances, maps to 1-7 for test-cnf-vnfc3 VNFC instances and maps
+                to 2-8 for test-cnf-vnfc4 VNFC instances (1 instance per scale step)
+              max_scale_level: 6
+              step_deltas:
+              - delta_1
+
+    - vnfc1.test-cnf:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ test-cnf ]
+
+    - vnfc1:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ test-cnf-vnfc1 ]
+
+    - vnfc2:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ test-cnf-vnfc2 ]
+
+    - vnfc3:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ test-cnf-vnfc3 ]
+
+    - vnfc4:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ test-cnf-vnfc4 ]
+
+    - Payload_ScalingAspectDeltas1:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect2
+          deltas:
+            delta_1:
+              number_of_instances: 4
+            delta_2:
+              number_of_instances: 1
+            delta_3:
+              number_of_instances: 9
+            delta_4:
+              number_of_instances: 3
+        targets: [ test-cnf-vnfc4, test-cnf-vnfc3 ]
+
+    - Payload_ScalingAspectDeltas2:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect1
+          deltas:
+            delta_1:
+              number_of_instances: 4
+        targets: [ test-cnf-vnfc3, test-cnf-vnfc2 ]
+
+    - Payload_ScalingAspectDeltas3:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect3
+          deltas:
+            delta_1:
+              number_of_instances: 2
+        targets: [ test-cnf, test-cnf-vnfc1 ]
+
+    - Payload_ScalingAspectDeltas4:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect4
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets: [ test-cnf, test-cnf-vnfc1, test-cnf-vnfc3, test-cnf-vnfc2, test-cnf-vnfc4 ]

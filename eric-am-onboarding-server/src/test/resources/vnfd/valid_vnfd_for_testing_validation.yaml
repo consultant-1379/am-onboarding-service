@@ -1,0 +1,331 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: VNF Descriptor for Ericsson SGSN-MME
+
+# INFO:
+# - This is a work-in-progress example VNFD for containerized VNFs in small stack scenario.
+# - Based on ETSI GS NFV-SOL 001 V2.5.1
+
+
+imports:
+  - etsi_nfv_sol001_vnfd_2_5_1_types.yaml
+
+data_types:
+  ericsson.datatypes.nfv.VnfInfoModifiableAttributes:
+    derived_from: tosca.datatypes.nfv.VnfInfoModifiableAttributes
+    properties:
+      extensions:
+        type: ericsson.datatypes.nfv.VnfInfoModifiableAttributesExtensions
+
+  ericsson.datatypes.nfv.VnfInfoModifiableAttributesExtensions:
+    derived_from: tosca.datatypes.nfv.VnfInfoModifiableAttributesExtensions
+    properties:
+      vnfControlledScaling:
+        type: map # key: aspectId
+        description: Represents for each aspect the controlled scaling method, either Manual or CISM
+        required: false
+        entry_schema:
+          type: string
+          constraints:
+            - valid_values: [ "ManualControlled", "CISMControlled" ]
+        default: { Aspect1: "ManualControlled" }
+  ericsson.datatypes.nfv.InstantiateVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      tags.all:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      tags.pm:
+        type: boolean
+        description: pm tag
+        required: true
+        default: true
+      eric-adp-gs-testapp.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      eric-pm-server.server.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      influxdb.ext.apiAccessHostname:
+        type: string
+        description: tags
+        required: true
+        default: influxdb-service2.rontgen010.seli.gic.ericsson.se
+      pm-testapp.ingress.domain:
+        type: string
+        description: pm ingress
+        required: true
+        default: rontgen010.seli.gic.ericsson.se
+      eric-pm-server.server.persistentVolume.storageClass:
+        type: string
+        description: db
+        required: false
+        default: network-block
+      config.nbi.file.enabled:
+        type: boolean
+        description: Enabled creation of file configmap
+        required: false
+        default: false
+        metadata:
+          chart_param: config.nbi.file.enabled
+      values.yaml:
+        type: string
+        required: false
+        description: This property can contain the contents of a values.yaml file in escaped json format
+      listType:
+        type: list
+        entry_schema:
+          type: string
+        description: list of strings with default values not required
+        required: false
+      mapType:
+        type: map
+        entry_schema:
+          type: string
+        description: map of strings with default values not required
+        required: false
+  ericsson.datatypes.nfv.ChangePackageVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      tags.all:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      tags.pm:
+        type: boolean
+        description: pm tag
+        required: true
+        default: true
+      eric-adp-gs-testapp.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      eric-pm-server.server.ingress.enabled:
+        type: boolean
+        description: tags
+        required: true
+        default: false
+      influxdb.ext.apiAccessHostname:
+        type: string
+        description: tags
+        required: true
+        default: influxdb-service2.todd041.seli.gic.ericsson.se
+      pm-testapp.ingress.domain:
+        type: string
+        description: pm ingress
+        required: true
+        default: todd041.seli.gic.ericsson.se
+      eric-pm-server.server.persistentVolume.storageClass:
+        type: string
+        description: db
+        required: false
+        default: erikube-rbd
+      config.nbi.file.enabled:
+        type: boolean
+        description: Enabled creation of file configmap
+        required: false
+        default: false
+        metadata:
+          chart_param: config.nbi.file.enabled
+      values.yaml:
+        type: string
+        required: false
+        description: This property can contain the contents of a values.yaml file in escaped json format
+
+node_types:
+  Ericsson.SGSN-MME.1_2_CXS101289_R81E08.cxp9025898_4r81e08:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        type: string
+        constraints: [ valid_values: [ new-scale-97a3-4b0661670934 ] ]
+        default: new-scale-97a3-4b0661670934
+      descriptor_version:
+        type: string
+        constraints: [ valid_values: [ 1.0.10 ] ]
+        default: 1.0.10
+      provider:
+        type: string
+        constraints: [ valid_values: [ Ericsson ] ]
+        default: Ericsson
+      product_name:
+        type: string
+        constraints: [ valid_values: [ spider-app-b ] ]
+        default: spider-app-b
+      software_version:
+        type: string
+        constraints: [ valid_values: [ '1.0.10s' ] ]
+        default: '1.0.10s'
+      # TODO: VNFM identifier to be defined
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+          constraints: [ valid_values: [ '3881:E-VNFM' ] ]
+        default: [ '3881:E-VNFM' ]
+      #configurable_properties: # Not used
+      #modifiable_attributes: # Not used
+      flavour_id:
+        type: string
+        constraints: [ valid_values: [ default ] ]
+        default: default
+      flavour_description:
+        type: string
+        default: ''
+      modifiable_attributes:
+        type: tosca.datatypes.nfv.VnfInfoModifiableAttributes
+    interfaces:
+      Vnflcm:
+        type: tosca.interfaces.nfv.Vnflcm
+        instantiate:
+          inputs:
+            helm_packages:
+              type: list
+              required: true
+              entry_schema: string
+              description: list of all helm charts
+            additional_parameters:
+              type: ericsson.datatypes.nfv.InstantiateVnfOperationAdditionalParameters
+              required: false
+        terminate:
+        scale: {}
+        change_package:
+          inputs:
+            additional_parameters:
+              type: ericsson.datatypes.nfv.ChangePackageVnfOperationAdditionalParameters
+              required: false
+    artifacts:
+      helm_package:
+        description: Helm package associated with this descriptor
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/spider-app-flexible-verification-2.190.13.tgz
+      software_images:
+        description: Location of the software images being used in this package
+        type: tosca.artifacts.nfv.SwImage
+        file: Files/images/docker.tar
+      scaling_mapping:
+        description: Scaling Mapping file associated with this descriptor
+        type: tosca.artifacts.File
+        file: vnfd/valid_scaling_map.yaml
+topology_template:
+  inputs:
+    modifiable_attributes:
+      type: ericsson.datatypes.nfv.VnfInfoModifiableAttributes
+
+  node_templates:
+    SAMPLE-VNF:
+      type: Ericsson.SGSN-MME.1_2_CXS101289_R81E08.cxp9025898_4r81e08
+      properties:
+        modifiable_attributes: { get_input: modifiable_attributes }
+      interfaces:
+        Vnflcm:
+          instantiate:
+            inputs:
+              helm_packages: [get_artifact: [SELF, helm_package]]
+          terminate: {}
+          scale: {}
+
+    eric-pm-bulk-reporter:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: eric-pm-bulk-reporter
+        description: example
+        vdu_profile:
+          min_number_of_instances: 4
+          max_number_of_instances: 10
+
+    Search-Engine:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: Search-Engine
+        description: example
+        vdu_profile:
+          min_number_of_instances: 2
+          max_number_of_instances: 12
+
+    Search-Engine-DB:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: Search-Engine-DB
+        description: example
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 15
+
+  policies:
+    - InstantiationLevels:
+        type: tosca.policies.nfv.InstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              description: eric-pm-bulk-reporter
+              scale_info:
+                Aspect1:
+                  scale_level: 0
+            instantiation_level_2:
+              description: eric-pm-bulk-reporter
+              scale_info:
+                Aspect1:
+                  scale_level: 3
+          default_level: instantiation_level_1
+
+    - fsb1_InstantiationLevels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 1
+        targets: [ eric-pm-bulk-reporter ]
+
+    - ScalingAspects1:
+        type: tosca.policies.nfv.ScalingAspects
+        properties:
+          aspects:
+            Aspect1:
+              name: Aspect1
+              description: >
+                Scale level 0-10 maps to 1-41 for test-cnf-vnfc3 VNFC instances
+                and also maps to 5-45 for test-cnf-vnfc2 VNFC instances (4 instance
+                per scale step)
+              max_scale_level: 10
+              step_deltas:
+                - delta_1
+    - Payload_ScalingAspectDeltas1:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: Aspect1
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets: [ eric-pm-bulk-reporter, Search-Engine, Search-Engine-DB ]
+    - eric-pm-bulk-reporter:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ eric-pm-bulk-reporter, Search-Engine, Search-Engine-DB ]
+

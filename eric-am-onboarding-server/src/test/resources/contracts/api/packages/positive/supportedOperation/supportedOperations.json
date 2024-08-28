@@ -1,0 +1,42 @@
+[
+    {
+      "operationName": "instantiate",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "scale",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "terminate",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "heal",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "modify_information",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "change_package",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "rollback",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "sync",
+      "supported": true,
+      "error": null
+    }
+]

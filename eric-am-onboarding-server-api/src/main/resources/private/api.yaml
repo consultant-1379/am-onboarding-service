@@ -1,0 +1,806 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+openapi: 3.0.3
+info:
+  version: '1.0'
+  title: Application Manager Onboarding Service
+
+servers:
+  - url: '{protocol}://{hostname}/{basePath}'
+    variables:
+      protocol:
+        default: https
+      hostname:
+        default: ${INGRESS_HOST_ADDRESS}/vnfm/onboarding
+      basePath:
+        default: api/v1
+
+tags:
+  - name: Packages
+    description: Groups all the Package Management Operations.
+  - name: Images
+    description: The images API
+  - name: Charts
+    description: The charts API
+  - name: Internal Package Controller
+  - name: Auto Complete Filter
+
+paths:
+  /packages/filter/autocomplete:
+    get:
+      tags:
+        - Auto Complete Filter
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: softwareVersion
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: packageVersion
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pageNumber
+          in: query
+          required: false
+          schema:
+            type: string
+            default: '0'
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: string
+            default: '5'
+      operationId: getAutoCompleteValue
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoCompleteResponse'
+  /internal/packages:
+    post:
+      tags:
+       - Internal Package Controller
+      description: Retrieve a resource with id and returns a VnfResource
+      parameters:
+        - name: helmChartURI
+          in: query
+          required: true
+          schema:
+            type: string
+      operationId: v1PackagesPost
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                type: string
+  /packages:
+    get:
+      tags:
+        - Packages
+      summary: V1Packages_GET
+      parameters:
+        - name: filter
+          description: |
+            Attribute-based filtering. The Onboarding shall support receiving this parameter
+            as part of the URI query string. The VNFM/OSS may supply this parameter. All
+            attribute names that appear in the AppPackageQuery and in data types referenced
+            from it shall be supported by the Onboarding in the filter expression
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: nextpage_opaque_marker
+          description: |
+            Marker to obtain the page number of a paged response.
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: size
+          description: |
+            The number of items per page. The default value is 15. Should be a positive number no greater than 100.
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                title: AppPackageList
+                properties:
+                  packages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AppPackageResponse'
+          headers:
+            Link:
+              description: >
+                Reference to other resources. Used for paging in the present
+                document.
+              schema:
+                type: string
+                maximum: 1
+                minimum: 0
+            PaginationInfo:
+              description: >
+                Page information of result set, includes
+                  number - the returned page number
+                  size - the number of results returned in the page
+                  totalPages - the total number of pages for the query
+                  totalElements - the total number of elements for the query
+              schema:
+                type: string
+                maximum: 1
+                minimum: 0
+  '/packages/{id}':
+    get:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The Id of the package'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppPackageResponse'
+        '400':
+          description: BAD REQUEST
+        '404':
+          description: PACKAGE NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
+    delete:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ''
+      responses:
+        '204':
+          description: SUCCESSFULLY DELETED RESOURCE
+        '400':
+          description: BAD REQUEST
+        '404':
+          description: PACKAGE NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
+  '/packages/{id}/status':
+    get:
+      tags:
+        - Packages
+      description: Returns the upload status of the package
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ''
+      responses:
+        '202':
+          description: ACCEPTED FOR UPLOAD BUT NOT COMPLETED
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: BAD REQUEST
+        '404':
+          description: PACKAGE NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
+  '/packages/{id}/{operation}/additional_parameters':
+    get:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The package id'
+        - name: operation
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The operation type'
+        - name: targetDescriptorId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Additional parameters retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdditionalPropertyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/packages/{id}/service_model':
+    get:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'Package Id associated with service model'
+      responses:
+        '200':
+          description: SERVICE MODEL RETRIEVED SUCCESSFULLY
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceModelRecordResponse'
+        '400':
+          description: BAD REQUEST
+        '401':
+          description: AUTHORIZATION ERROR
+        '404':
+          description: SERVICE MODEL NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
+  '/packages/{id}/supported_operations':
+    get:
+      tags:
+        - Packages
+      description: Get the list of supported operations for package
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The id of the package'
+      responses:
+        '200':
+          description: The list of supported operations details for package retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OperationDetailResponse'
+        '500':
+          description: INTERNAL SERVER ERROR
+  /charts:
+    get:
+      tags:
+        - Charts
+      description: Get the details of Charts
+      responses:
+        '200':
+          description: CHART DETAILS RETRIEVED SUCCESSFULLY
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: CHART NOT FOUND
+  '/charts/{chartName}':
+    get:
+      tags:
+        - Charts
+      description: Get the details of Charts by Name
+      parameters:
+        - name: chartName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The name of the chart'
+      responses:
+        '200':
+          description: CHART DETAILS RETRIEVED SUCCESSFULLY
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: PACKAGE NOT FOUND
+  /images:
+    get:
+      tags:
+        - Images
+      description: >-
+        Returns all images present in harbor if query parameters are not
+        provided
+      responses:
+        '200':
+          description: IMAGE DETAILS RETRIEVED SUCCESSFULLY
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+        '400':
+          description: BAD REQUEST
+        '401':
+          description: AUTHORIZATION ERROR
+        '500':
+          description: INTERNAL SERVER ERROR
+  '/images/{imageName}':
+    get:
+      tags:
+        - Images
+      parameters:
+        - name: imageName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The name of the image'
+      responses:
+        '200':
+          description: IMAGE DETAILS RETRIEVED SUCCESSFULLY
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+        '400':
+          description: BAD REQUEST
+        '401':
+          description: AUTHORIZATION ERROR
+        '500':
+          description: INTERNAL SERVER ERROR
+  '/images/{imageName}/{imageTag}':
+    get:
+      tags:
+        - Images
+      parameters:
+        - name: imageName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The name of the image'
+        - name: imageTag
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 'The tag associated with the image'
+      responses:
+        '200':
+          description: IMAGE DETAILS RETRIEVED SUCCESSFULLY
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+        '400':
+          description: BAD REQUEST
+        '401':
+          description: AUTHORIZATION ERROR
+        '500':
+          description: INTERNAL SERVER ERROR
+
+components:
+  schemas:
+    OperationDetailResponse:
+      description: Operation Detail response for package
+      type: object
+      title: OperationDetailResponse
+      properties:
+        operationName:
+          type: string
+        supported:
+          type: boolean
+        error:
+          type: string
+    ImageResponse:
+      description: |
+        This type represents a ImageResponse.
+      properties:
+        metadata:
+          type: object
+          properties:
+            count:
+              type: integer
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageResponseProjects'
+    ImageResponseProjects:
+      type: object
+      properties:
+        name:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageResponseImages'
+    ImageResponseImages:
+      type: object
+      properties:
+        name:
+          type: string
+        repository:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    ProblemDetails:
+      description: >
+        The definition of the general "ProblemDetails" data structure from
+        IETF RFC 7807 [19] is reproduced in this structure. Compared to
+        the general framework defined in IETF RFC 7807 [19], the "status"
+        and "detail" attributes are mandated to be included by the present
+        document, to ensure that the response contains additional textual
+        information about an error. IETF RFC 7807 [19] foresees
+        extensibility of the "ProblemDetails" type. It is possible that
+        particular APIs in the present document, or particular
+        implementations, define extensions to define additional attributes
+        that provide more information about the error. The description
+        column only provides some explanation of the meaning to Facilitate
+        understanding of the design. For a full description, see IETF RFC
+        7807 [19].
+      type: object
+      required:
+        - status
+        - detail
+      properties:
+        type:
+          description: >
+            A URI reference according to IETF RFC 3986 [5] that identifies
+            the problem type. It is encouraged that the URI provides
+            human-readable documentation for the problem (e.g. using HTML)
+            when dereferenced. When this member is not present, its value
+            is assumed to be "about:blank".
+          type: string
+          format: URI
+        title:
+          description: >
+            A short, human-readable summary of the problem type. It should
+            not change from occurrence to occurrence of the problem,
+            except for purposes of localization. If type is given and
+            other than "about:blank", this attribute shall also be
+            provided. A short, human-readable summary of the problem
+            type.  It SHOULD NOT change from occurrence to occurrence of
+            the problem, except for purposes of localization (e.g., using
+            proactive content negotiation; see [RFC7231], Section 3.4).
+          type: string
+        status:
+          description: >
+            The HTTP status code for this occurrence of the problem. The
+            HTTP status code ([RFC7231], Section 6) generated by the
+            origin server for this occurrence of the problem.
+          type: integer
+        detail:
+          description: >
+            A human-readable explanation specific to this occurrence of
+            the problem.
+          type: string
+        instance:
+          description: >
+            A URI reference that identifies the specific occurrence of the
+            problem. It may yield further information if dereferenced.
+          type: string
+          format: URI
+    HelmPackage:
+      type: object
+      properties:
+        chartUrl:
+          description: |
+            The URL to the chart.
+          type: string
+        chartName:
+          description: |
+            The name of the chart.
+          type: string
+        chartVersion:
+          description: |
+            The version of the chart.
+          type: string
+        chartType:
+          description: |
+            The type of the chart.
+          type: string
+          enum:
+            - CRD
+            - CNF
+        priority:
+          description: |
+            The order in which the charts will be installed in order of ascendency.
+          type: integer
+        chartArtifactKey:
+          description: |
+            The artifact key of the chart.
+          type: string
+    AutoCompleteResponse:
+      properties:
+        type:
+          type: array
+          items:
+            type: string
+        provider:
+          type: array
+          items:
+            type: string
+        packageVersion:
+          type: array
+          items:
+            type: string
+        softwareVersion:
+          type: array
+          items:
+            type: string
+    AppPackageResponse:
+      properties:
+        appPkgId:
+          description: |
+            Id of the app package.
+          type: string
+        appDescriptorId:
+          description: >
+            The app descriptor id
+          type: string
+        appProvider:
+          description: >
+            The app provider
+          type: string
+        appProductName:
+          description: |
+            The application product name.
+          type: string
+        appSoftwareVersion:
+          description: >
+            The application software version
+          type: string
+        descriptorVersion:
+          description: >
+            The descriptor version
+          type: string
+        descriptorModel:
+          description: |
+            The descriptor model
+          type: object
+        helmPackageUrls:
+          description: |
+            The list of helm package urls
+          type: array
+          items:
+            $ref: '#/components/schemas/HelmPackage'
+        imagesURL:
+          description: |
+            The URL to the images.
+          type: array
+          items:
+            type: object
+        packageFiles:
+          description: |
+            List of package files
+          type: array
+          items:
+            type: object
+        onboardingState:
+          description: >
+            The onboarding state.
+          type: string
+        usageState:
+          description: |
+            The Usage state for the package.
+          type: string
+          enum:
+            - NOT_IN_USE
+            - IN_USE
+        packageSecurityOption:
+          type: string
+          description: |
+            The signature type of the package.
+          enum:
+            - OPTION_1
+            - OPTION_2
+            - UNSIGNED
+        serviceModelId:
+          description: >
+            Contains the Id of the service model if package has been uploaded to Tosca-O service.
+          type: string
+        supportedOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperationDetailResponse'
+        problemDetails:
+          description: >
+            Problem details during onboarding
+          type: string
+    ServiceModelRecordResponse:
+      properties:
+        serviceModelId:
+          description: |
+            Id of the service model.
+          type: string
+        packageId:
+          description: |
+            Package id associated with service model.
+          type: string
+        descriptorId:
+          description: |
+            Descriptor id associated with service model.
+          type: string
+        serviceModelName:
+          description: |
+            Name of the service model.
+          type: string
+    AdditionalPropertyResponse:
+      type: object
+      description: |
+        This type represents a AdditionalPropertyResponse.
+      properties:
+        name:
+          type: string
+        required:
+          type: boolean
+        type:
+          type: string
+        description:
+          type: string
+        entry_schema:
+          type: object
+          properties:
+            type:
+              type: string
+        constraints:
+          type: array
+          items:
+            type: object
+            properties:
+              pattern:
+                type: string
+              valid_values:
+                type: object
+        default:
+          type: object
+        metadata:
+          type: object
+          properties:
+            chart_param:
+              type: string
+  responses:
+    BadRequest:
+      description: |
+        BAD REQUEST – code can be returned in the following specified cases, the
+        specific cause has to be proper specified in the "ProblemDetails"
+        structure to be returned.
+  
+        If the request is malformed or syntactically incorrect (e.g. if the
+        request URI contains incorrect query parameters or the payload body
+        contains a syntactically incorrect data structure), the API producer
+        shall respond with this response code. The "ProblemDetails"
+        structure shall be provided, and should include in the "detail"
+        attribute more information about the source of the problem.
+  
+        If the response to a GET request which queries a container resource
+        would be so big that the performance of the API producer is
+        adversely affected, and the API producer does not support paging for
+        the affected resource, it shall respond with this response code. The
+        "ProblemDetails" structure shall be provided, and should include in
+        the "detail" attribute more information about the source of the
+        problem.
+  
+        If there is an application error related to the client's input that
+        cannot be easily mapped to any other HTTP response code ("catch all
+        error"), the API producer shall respond with this response code. The
+        "ProblemDetails" structure shall be provided, and shall include in
+        the "detail" attribute more information about the source of the
+        problem.
+  
+        If the request contains a malformed access token, the API producer
+        should respond with this response. The details of the error shall be
+        returned in the WWW Authenticate HTTP header, as defined in IETF RFC
+        6750 and IETF RFC 7235. The ProblemDetails structure may be
+        provided.
+  
+        The use of this HTTP error response code described above is
+        applicable to the use of the OAuth 2.0 for the authorization of API
+        requests and notifications, as defined in clauses 4.5.3.3 and
+        4.5.3.4.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Unauthorized:
+      description: |
+        UNAUTHORIZED – If the request contains no access token even though one is required,
+        or if the request contains an authorization token that is invalid
+        (e.g. expired or revoked), the API producer should respond with this
+        response. The details of the error shall be returned in the
+        WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF
+        RFC 7235. The ProblemDetails structure may be provided.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    InternalServerError:
+      description: |
+        INTERNAL SERVER ERROR – If there is an application error not related to the client's input
+        that cannot be easily mapped to any other HTTP response code ("catch
+        all error"), the API producer shall respond with this response code.
+        The "ProblemDetails" structure shall be provided, and shall include
+        in the "detail" attribute more information about the source of the
+        problem.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'

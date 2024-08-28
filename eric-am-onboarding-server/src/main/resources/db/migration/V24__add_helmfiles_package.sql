@@ -1,0 +1,6 @@
+CREATE TABLE HELMFILES (
+  id SERIAL UNIQUE,
+  package_id VARCHAR NOT NULL,
+  content BYTEA DEFAULT NULL,
+  FOREIGN KEY (package_id) REFERENCES app_packages (package_id) ON DELETE CASCADE
+);

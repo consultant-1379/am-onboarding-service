@@ -1,0 +1,171 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: VNF Descriptor for Ericsson SGSN-MME
+
+# INFO:
+# - This is a work-in-progress example VNFD for containerized VNFs in small stack scenario.
+# - Based on ETSI GS NFV-SOL 001 V2.5.1
+
+
+imports:
+  - etsi_nfv_sol001_vnfd_2_5_1_types.yaml
+
+data_types:
+  Ericsson.SAMPLE-VNF.1_25_CXS101289_R81E08.cxp9025898_4r81e08.datatypes.nfv.InstantiateVnfOperationAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      helm_package1.vnfc1.ingress.host:
+        type: string
+        description: ingress host for vnf1
+        required: true
+        default: 'vnfc1.dummyhost.com'
+      helm_package1.vnfc1.test-cnf.ingress.host:
+        type: string
+        description: ingress host for vnf1
+        required: true
+        default: 'vnfc1.dummyhost1.com'
+      helm_package1.vnfc2.ingress.host:
+        type: string
+        description: ingress host for vnf2
+        required: true
+        default: 'vnfc2.dummyhost.com'
+      helm_package1.vnfc3.ingress.host:
+        type: string
+        description: ingress host for vnf3
+        required: true
+        default: 'vnfc3.dummyhost.com'
+      helm_package1.vnfc4.ingress.host:
+        type: string
+        description: ingress host for vnf4
+        required: true
+        default: 'vnfc4.dummyhost.com'
+      helm_package2.eric-adp-gs-testapp.ingress.enabled:
+        type: boolean
+        description: ingress host for helm package 2
+        required: true
+        default: false
+      helm_package2.eric-pm-server.server.ingress.enabled:
+        type: boolean
+        description: ingress host for helm package 2
+        required: true
+        default: false
+      helm_package2.influxdb.ext.apiAccessHostname:
+        type: string
+        description: ingress host for helm package 2
+        required: true
+        default: influxdb-service2
+      helm_package2.pm-testapp.ingress.domain:
+        type: string
+        description: ingress host for helm package 2
+        required: true
+        default: server
+      helm_package2.eric-pm-server.server.persistentVolume.storageClass:
+        type: string
+        description: ingress host for helm package 2
+        required: true
+        default: network-block
+      helm_package2eric-adp-gs-testapp.tls.dced.enabled:
+        type: boolean
+        description: enable tls for eric-adp-gs-testapp
+        required: true
+        default: false
+
+node_types:
+  Ericsson.SAMPLE-VNF.1_25_CXS101289_R81E08.cxp9025898_4r81e08:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        type: string
+        constraints: [ valid_values: [ def1ce-4cf4-477c-aab3-2b04e6a382 ] ]
+        default: def1ce-4cf4-477c-aab3-2b04e6a382
+      descriptor_version:
+        type: string
+        constraints: [ valid_values: [ cxp9025898_4r81e08 ] ]
+        default: cxp9025898_4r81e08
+      provider:
+        type: string
+        constraints: [ valid_values: [ Ericsson ] ]
+        default: Ericsson
+      product_name:
+        type: string
+        constraints: [ valid_values: [ SAMPLE-VNF ] ]
+        default: SAMPLE-VNF
+      software_version:
+        type: string
+        constraints: [ valid_values: [ '1.25 (CXS101289_R81E08)' ] ]
+        default: '1.25 (CXS101289_R81E08)'
+      # TODO: VNFM identifier to be defined
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+          constraints: [ valid_values: [ '3881:E-VNFM' ] ]
+        default: [ '3881:E-VNFM' ]
+      #configurable_properties: # Not used
+      #modifiable_attributes: # Not used
+      flavour_id:
+        type: string
+        constraints: [ valid_values: [ sample-flavour-1, sample-flavour-2 ] ]
+        default: sample-flavour-1
+      flavour_description:
+        type: string
+        default: ''
+    interfaces:
+      Vnflcm:
+        type: tosca.interfaces.nfv.Vnflcm
+        instantiate:
+          inputs:
+            helm_packages:
+              type: list
+              entry_schema:
+                type: string
+              required: true
+              description: list of all helm charts
+              default: [get_artifact: [SELF, helm_package1], get_artifact: [SELF, helm_package2]]
+            helm_packages_priority:
+              type: list
+              entry_schema:
+                type: integer
+              required: false
+              description: priorities in which helm chart should be installed
+            helm_values:
+              type: map
+              entry_schema:
+                type: string
+              required: false
+              description: helm values for selecting flavour, these values shoud not be used in addtional_parameters
+            additional_parameters:
+              type: Ericsson.SAMPLE-VNF.1_25_CXS101289_R81E08.cxp9025898_4r81e08.datatypes.nfv.InstantiateVnfOperationAdditionalParameters
+              required: false
+        terminate: {}
+        scale: {}
+        change_package: {}
+    artifacts:
+      helm_package1:
+        description: Helm package associated with this descriptor
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/test-scale-chart-0.1.0.tgz
+      helm_package2:
+        description: Helm package associated with this descriptor
+        type: tosca.artifacts.File
+        file: Definitions/OtherTemplates/spider-app-2.207.9.tgz
+      software_images:
+        description: Location of the software images being used in this package
+        type: tosca.artifacts.nfv.SwImage
+        file: Files/images/docker.tar

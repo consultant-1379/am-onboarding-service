@@ -1,0 +1,10 @@
+{
+  "onboardApp": {
+    "appName": "PCG_CXP9041656_1-R57B04",
+    "csarDownloadUrl": "cnf-automation/PCG_CXP9041656_1-R57B04.csar",
+    "appImagesCount": 0,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  }
+}
+

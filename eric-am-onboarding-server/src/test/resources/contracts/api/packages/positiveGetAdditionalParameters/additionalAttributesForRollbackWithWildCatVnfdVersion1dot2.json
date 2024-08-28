@@ -1,0 +1,12 @@
+[
+  {
+    "default": false,
+    "name": "tags.all",
+    "required": null,
+    "type": "boolean",
+    "description": "tags",
+    "entry_schema": null,
+    "constraints": null,
+    "metadata": null
+  }
+]

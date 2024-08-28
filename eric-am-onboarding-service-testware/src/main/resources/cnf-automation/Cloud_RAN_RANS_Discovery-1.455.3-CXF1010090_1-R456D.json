@@ -1,0 +1,10 @@
+{
+  "onboardApp": {
+    "appName": "Cloud_RAN_RANS_Discovery-1.455.3-CXF1010090_1-R456D",
+    "csarDownloadUrl": "cnf-automation/Cloud_RAN_RANS_Discovery-1.455.3-CXF1010090_1-R456D.csar",
+    "appImagesCount": 0,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  }
+}
+

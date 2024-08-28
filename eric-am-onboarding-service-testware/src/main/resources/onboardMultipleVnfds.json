@@ -1,0 +1,10 @@
+{
+  "onboardApp": {
+    "appName": "sampleflavour",
+    "csarDownloadUrl": "/tmp/sample-cnf-flavor-1.csar",
+    "appImagesCount": 1,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  },
+  "operations": []
+}

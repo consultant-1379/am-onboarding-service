@@ -1,0 +1,33 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+productName: EVNFM Onboarding Service
+productNumber: CXD 101 0744
+images:
+  onboardingService:
+    productName: EVNFM Onboarding Service
+    productNumber: CXU 101 0686
+    registry: armdocker.rnd.ericsson.se
+    repoPath: proj-am/snapshots
+    name: eric-am-onboarding-service
+    tag: VERSION
+  pgInitContainer:
+    productName: Document Database PG
+    productNumber: CXC 201 1395/5
+    registry: armdocker.rnd.ericsson.se
+    repoPath: proj-am/snapshots
+    name: eric-am-onboarding-service-pg
+    tag: VERSION

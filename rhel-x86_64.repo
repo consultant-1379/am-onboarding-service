@@ -1,0 +1,11 @@
+[RedHat-7.5-OS]
+name=RedHat-7.5-OS
+baseurl=http://yum.linux.ericsson.se/repos/rhel-x86_64-server-7.5.eus/
+enabled=1
+gpgcheck=0
+
+[RedHat-7-OS-extra]
+name=RedHat-7-OS-extra
+baseurl=http://yum.linux.ericsson.se/repos/rhel-x86_64-server-extras-7/
+enabled=1
+gpgcheck=0

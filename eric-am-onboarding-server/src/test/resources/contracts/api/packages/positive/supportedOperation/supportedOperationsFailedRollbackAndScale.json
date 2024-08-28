@@ -1,0 +1,42 @@
+[
+    {
+      "operationName": "instantiate",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "scale",
+      "supported": false,
+      "error": "properties.deltas[delta_1].numberOfInstances: number of instance can be only positive"
+    },
+    {
+      "operationName": "terminate",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "heal",
+      "supported": false,
+      "error": null
+    },
+    {
+      "operationName": "modify_information",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "change_package",
+      "supported": true,
+      "error": null
+    },
+    {
+      "operationName": "rollback",
+      "supported": false,
+      "error": "properties.deltas[delta_1].numberOfInstances: number of instance can be only positive"
+    },
+    {
+      "operationName": "sync",
+      "supported": true,
+      "error": null
+    }
+]

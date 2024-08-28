@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "code": "MANIFEST_UNKNOWN",
+      "message": "manifest unknown",
+      "detail": {
+        "Tag": "bad-tag"
+      }
+    }
+  ]
+}

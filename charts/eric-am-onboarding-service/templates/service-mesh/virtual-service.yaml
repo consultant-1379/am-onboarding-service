@@ -1,0 +1,64 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+{{- if (eq (include "eric-am-onboarding-service.service-mesh-enabled" .) "true") }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ template "eric-am-onboarding-service.name" . }}-virtualservice
+  labels: {{- include "eric-am-onboarding-service.labels.extended-defaults" . | nindent 4 }}
+  annotations: {{- include "eric-am-onboarding-service.annotations" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ template "eric-am-onboarding-service.name" . }}
+  http:
+    - match:
+        - method:
+            exact: GET
+          uri:
+            prefix: /
+      retries:
+        attempts: {{ .Values.highAvailability.serviceMesh.routes.get.retries.maxAttempts }}
+        perTryTimeout: {{ .Values.highAvailability.serviceMesh.routes.get.retries.perTryTimeout }}
+        retryOn: 5xx,reset,gateway-error,connect-failure
+      timeout: {{ .Values.highAvailability.serviceMesh.routes.get.timeout }}
+      route:
+        - destination:
+            host: {{ template "eric-am-onboarding-service.name" . }}
+            subset: {{ template "eric-am-onboarding-service.name" . }}-v1
+    - match:
+        - method:
+            exact: POST
+          uri:
+            exact: /api/vnfpkgm/v1/vnf_packages
+        - method:
+            exact: DELETE
+          uri:
+            prefix: /api/vnfpkgm/v1/vnf_packages/
+      retries:
+        attempts: {{ .Values.highAvailability.serviceMesh.routes.postdelete.retries.maxAttempts }}
+        perTryTimeout: {{ .Values.highAvailability.serviceMesh.routes.postdelete.retries.perTryTimeout }}
+        retryOn: 5xx,reset,gateway-error,connect-failure,retriable-headers
+      timeout: {{ .Values.highAvailability.serviceMesh.routes.postdelete.timeout }}
+      route:
+        - destination:
+            host: {{ template "eric-am-onboarding-service.name" . }}
+            subset: {{ template "eric-am-onboarding-service.name" . }}-v1
+    - route:
+        - destination:
+            host: {{ template "eric-am-onboarding-service.name" . }}
+            subset: {{ template "eric-am-onboarding-service.name" . }}-v1
+{{- end }}

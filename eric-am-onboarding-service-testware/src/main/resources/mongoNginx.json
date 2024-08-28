@@ -1,0 +1,224 @@
+{
+  "onboardApp": {
+    "appName": "crartmongo",
+    "csarDownloadUrl": "/tmp/mongo-nginx.csar",
+    "appImagesCount": 2,
+    "skipImageValidation": "false",
+    "destinationDescriptorIds": []
+  },
+  "operations": [
+    {
+      "operationName": "instantiate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "name": "day0.configuration.param2.value",
+          "required": true,
+          "type": "string",
+          "description": "I am password value",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "verysecretpassword",
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.param2.key",
+          "required": true,
+          "type": "string",
+          "description": "I am password",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "password",
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.secretname",
+          "required": true,
+          "type": "string",
+          "description": "I am secret name",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "evnf-secret",
+          "metadata": null
+        },
+        {
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "Very interesting description",
+          "entry_schema": null,
+          "constraints": null,
+          "default": true,
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.param1.key",
+          "required": true,
+          "type": "string",
+          "description": "I am login",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "login",
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.param1.value",
+          "required": true,
+          "type": "string",
+          "description": "I am login value",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "testroot",
+          "metadata": null
+        },
+        {
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "default": false,
+          "metadata": null
+        },
+        {
+          "name": "tags.logo",
+          "required": true,
+          "type": "string",
+          "description": "Logo",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "logo",
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "heal",
+      "isSupported": false,
+      "operationErrorMessage": "heal operation is missing in VNF LCM interfaces",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "scale",
+      "isSupported": false,
+      "operationErrorMessage": "scale operation is missing in VNF LCM interfaces",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "modify_information",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "rollback",
+      "isSupported": false,
+      "operationErrorMessage": "For Rollback LCM operation it's required that VNFD to contain Interface derived from tosca.interfaces.nfv.ChangeCurrentVnfPackage",
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "change_current_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "change_package",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+        {
+          "name": "day0.configuration.param2.value",
+          "required": true,
+          "type": "string",
+          "description": "I am password value",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "verysecretsecret",
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.param2.key",
+          "required": true,
+          "type": "string",
+          "description": "I am password",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "password",
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.secretname",
+          "required": true,
+          "type": "string",
+          "description": "I am secret name for chaging VNF",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "vnfSecretTest",
+          "metadata": null
+        },
+        {
+          "name": "tags.pm",
+          "required": true,
+          "type": "boolean",
+          "description": "pm tag",
+          "entry_schema": null,
+          "constraints": null,
+          "default": true,
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.param1.key",
+          "required": true,
+          "type": "string",
+          "description": "I am login",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "login",
+          "metadata": null
+        },
+        {
+          "name": "day0.configuration.param1.value",
+          "required": true,
+          "type": "string",
+          "description": "I am login value",
+          "entry_schema": null,
+          "constraints": null,
+          "default": "testroot",
+          "metadata": null
+        },
+        {
+          "name": "tags.all",
+          "required": true,
+          "type": "boolean",
+          "description": "tags",
+          "entry_schema": null,
+          "constraints": null,
+          "default": false,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "operationName": "sync",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    },
+    {
+      "operationName": "terminate",
+      "isSupported": true,
+      "operationErrorMessage": null,
+      "propertyList": [
+      ]
+    }
+  ]
+}

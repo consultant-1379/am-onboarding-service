@@ -1,0 +1,41 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eric-am-onboarding-service.name" . }}
+  labels: {{- include "eric-am-onboarding-service.labels.extended-defaults" . | nindent 4 }}
+  annotations:
+    {{- $commonAnnotations := include "eric-am-onboarding-service.annotations" . | fromYaml }}
+    {{- $prometheus := include "eric-am-onboarding-service.prometheus" . | fromYaml }}
+    {{- include "eric-eo-evnfm-library-chart.mergeAnnotations" (dict "location" .Template.Name "sources" (list
+        $commonAnnotations $prometheus)) | trim | nindent 8 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.container.ports.http }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "eric-am-onboarding-service.name" . }}
+    release: {{ .Release.Name }}
+{{- if (eq (include "eric-am-onboarding-service.internalIPFamily" .) "IPv4") }}
+  ipFamilies: [ "IPv4" ]
+{{- else if (eq (include "eric-am-onboarding-service.internalIPFamily" .) "IPv6") }}
+  ipFamilies: [ "IPv6" ]
+{{- end }}

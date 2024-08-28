@@ -1,0 +1,10 @@
+{
+  "onboardApp": {
+    "appName": "Cloud_RAN_CU-UP-1.1878.29-CXF1010103_1-R1879AK",
+    "csarDownloadUrl": "cnf-automation/Cloud_RAN_CU-UP-1.1878.29-CXF1010103_1-R1879AK.csar",
+    "appImagesCount": 0,
+    "skipImageValidation": "true",
+    "destinationDescriptorIds": []
+  }
+}
+
